@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BigWhite</string>
+    <string name="title_splash">BigWhite</string>
+    <string name="splash">SPLASH</string>
+    <string name="my_pop">pop</string>
+    <string name="add_bookmark">添加书签</string>
+    <string name="bookmark">我的书签</string>
+    <string name="history">历史记录</string>
+    <string name="login">登录</string>
+    <string name="exit">退出登录</string>
 </resources>
