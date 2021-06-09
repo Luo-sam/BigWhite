@@ -57,37 +57,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setSoftInputMode
-//                (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
-//                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        //防止底部导航栏上移
+        getWindow().setSoftInputMode
+                (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
-        mContext = MainActivity.this;
+        //mContext = MainActivity.this;
         manager=(InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         /*打印成功显示在logcat*/
         Log.d(TAG, "onCreate: 创建成功");
         initView();
-        //initWeb();
+        initWeb();
     }
     private void initView(){
         /*对mContext初始化*/
         mContext = MainActivity.this;
         /*底部导航栏的id获取*/
         //ImageView backleft, backright, home, morewindows, my;
-        View view1=this.getLayoutInflater().inflate(R.layout.activity_main,null);
+        //View view1=this.getLayoutInflater().inflate(R.layout.activity_main,null);
         //ImageView backleft = findViewById(R.id.backLeft);
+        webView=findViewById(R.id.webView);
         backleft=findViewById(R.id.backLeft);
         backright = findViewById(R.id.backRight);
         home = findViewById(R.id.home);
         morewindows = findViewById(R.id.more_windows);
         btnStart=findViewById(R.id.btnStart);
         my = findViewById(R.id.my);
-        textUrl=view1.findViewById(R.id.textUrl);
+        textUrl=findViewById(R.id.textUrl);
+        progressBar=findViewById(R.id.progressBar);
+        webIcon=findViewById(R.id.webIcon);
         /*绑定点击事件*/
         backleft.setOnClickListener(this);
         backright.setOnClickListener(this);
         home.setOnClickListener(this);
         morewindows.setOnClickListener(this);
         my.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
         //地址输入栏获取和失去焦点处理
         textUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -256,24 +261,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showPopFormBottom();
     }
   }
-//    @Override
-//    protected void onPause(){
-//        super.onPause();
-//        try{
-//            webView.getClass().getMethod("onPause").invoke(webView);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//    }
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        try {
-//            webView.getClass().getMethod("onResum").invoke(webView);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        try{
+            webView.getClass().getMethod("onPause").invoke(webView);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        try {
+            webView.getClass().getMethod("onResume").invoke(webView);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     private static String getVerName(Context context){
         String verName="unKnow";
         try{
