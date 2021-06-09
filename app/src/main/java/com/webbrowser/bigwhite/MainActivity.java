@@ -254,7 +254,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if(id == R.id.backRight){
             webView.goForward();
         }else if(id == R.id.home){
-            Toast.makeText(mContext, "功能开发中", Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(this,MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }else if(id == R.id.more_windows){
             Toast.makeText(mContext, "功能开发中", Toast.LENGTH_SHORT).show();
         }else if(id == R.id.my){
