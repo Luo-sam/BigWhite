@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
-
+    private TakePhotoPopWin takePhotoPopWin;
 
     @Override
     public void onClick(View v) {
@@ -296,9 +296,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void showPopFormBottom(){
 
-        TakePhotoPopWin takePhotoPopWin = new TakePhotoPopWin(this,onClickListener);
+        takePhotoPopWin  = new TakePhotoPopWin(this,onClickListener);
         takePhotoPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER,0,0);
     }
+
+
     private final View.OnClickListener onClickListener = v -> {
         int id = v.getId();
         if(id == R.id.login){
@@ -308,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if(id == R.id.bookmark){
             startActivity(new Intent(MainActivity.this, bookmark.class));
         }else if(id == R.id.history){
+            takePhotoPopWin.dismiss();
             startActivity(new Intent(MainActivity.this, history.class));
         }else if(id == R.id.exit){
             Toast.makeText(mContext, "退出登录功能开发中", Toast.LENGTH_SHORT).show();

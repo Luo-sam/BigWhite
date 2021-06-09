@@ -10,4 +10,7 @@
     <string name="history">历史记录</string>
     <string name="login">登录</string>
     <string name="exit">退出登录</string>
+    <string name="back">返回</string>
+    <string name="history_title">History</string>
+    <string name="pic">图标</string>
 </resources>
