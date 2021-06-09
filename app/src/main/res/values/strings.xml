@@ -1,8 +1,10 @@
 <resources>
+    <string name="input_url">搜索或输入网址</string>
     <string name="app_name">BigWhite</string>
     <string name="title_splash">BigWhite</string>
     <string name="splash">SPLASH</string>
     <string name="my_pop">pop</string>
+    <string name="home_url">https://xw.qq.com/</string>
     <string name="add_bookmark">添加书签</string>
     <string name="bookmark">我的书签</string>
     <string name="history">历史记录</string>

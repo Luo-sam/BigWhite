@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.webbrowser.bigwhite">
-    <!--使用网络权限设置-->
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -10,7 +9,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BigWhite">
+        android:theme="@style/Theme.BigWhite"
+        android:hardwareAccelerated="true">
         <activity android:name=".activity.splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,10 +21,9 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".activity.history"/>
         <activity android:name=".activity.bookmark"/>
-        <activity android:name=".activity.multiwindows"/>
         <activity android:name=".activity.login"/>
+        <activity android:name=".activity.multiwindows"/>
         <activity android:name=".activity.register"/>
     </application>
-
 
 </manifest>

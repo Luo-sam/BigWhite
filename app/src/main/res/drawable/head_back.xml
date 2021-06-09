@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 浏览器地址栏背景 -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 大背景 -->
+    <item>
+        <shape>
+            <solid android:color="#ffffff" />
+        </shape>
+    </item>
+
+    <!-- 内部 -->
+    <item
+        android:top="5dp"
+        android:right="5dp"
+        android:bottom="5dp"
+        android:left="5dp">
+        <shape>
+            <solid android:color="#f4f4f4" />
+
+            <corners android:radius="3dp"/>
+        </shape>
+    </item>
+</layer-list>
