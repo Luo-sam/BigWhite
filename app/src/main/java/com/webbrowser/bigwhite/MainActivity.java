@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private InputMethodManager manager;
     private static final String HTTP="http://";
     private static final String HTTPS="https://";
+    private static final int PRESS_BACK_EXIT_GAP=2000;
     /*onCreate方法*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,6 +307,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         takePhotoPopWin  = new TakePhotoPopWin(this,onClickListener);
         takePhotoPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER,0,0);
     }
+    @Override
+    public void onBackPressed(){
+        //返回上一页
+        if(webView.canGoBack()){
+            webView.goBack();
+        }else{
+            if((System.currentTimeMillis()-exitTime)>PRESS_BACK_EXIT_GAP){
+                //点击两次就退出
+                Toast.makeText(mContext,"再按一次退出浏览器",Toast.LENGTH_SHORT).show();
+                exitTime=System.currentTimeMillis();
+            }else {
+                super.onBackPressed();
+            }
+        }
+    }
+
 
 
     private final View.OnClickListener onClickListener = v -> {
