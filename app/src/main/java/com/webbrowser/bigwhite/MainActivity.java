@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-        //webView.loadUrl(getResources().getString(R.string.home_url));
+        webView.loadUrl(getResources().getString(R.string.home_url));
     }
     //重写WebViewClient
     private class MkWebViewClient extends WebViewClient{
