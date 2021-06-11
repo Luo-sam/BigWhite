@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.activity;
+package com.webbrowser.bigwhite.activity.popWindows;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,13 +9,14 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.R;
 
-public class TakePhotoPopWin extends PopupWindow {
+public class myPopWin extends PopupWindow {
 
     private final View view;
     @SuppressLint("ClickableViewAccessibility")
-    public TakePhotoPopWin(Context mContext, View.OnClickListener itemsOnClick) {
+    public myPopWin(Context mContext, View.OnClickListener itemsOnClick) {
 
         this.view = LayoutInflater.from(mContext).inflate(R.layout.my_pop, null);
 

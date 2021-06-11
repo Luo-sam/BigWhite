@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -14,7 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.webbrowser.bigwhite.View.adapter.SectionsPageAdapter;
 import com.webbrowser.bigwhite.View.fragment.SearchFragment;
-import com.webbrowser.bigwhite.activity.TakePhotoPopWin;
+import com.webbrowser.bigwhite.activity.popWindows.myPopWin;
 import com.webbrowser.bigwhite.activity.bookmark;
 import com.webbrowser.bigwhite.activity.chooseLoginRegister;
 import com.webbrowser.bigwhite.activity.history;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Context mContext;
     /*个人栏弹窗*/
-    private TakePhotoPopWin takePhotoPopWin;
+    private myPopWin myPopWin;
 
     /*搜索栏*/
     private ViewPager viewPager;
@@ -39,9 +40,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //防止底部导航栏上移
-//        getWindow().setSoftInputMode
-//                (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
-//                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        getWindow().setSoftInputMode
+                (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN |
+                        WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_main);
         initView();
     }
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.backLeft){
-//            MainFragment.webView.goBack();
+            SearchFragment.goToBack();
         }else if(id == R.id.backRight){
 //            webView.goForward();
         }else if(id == R.id.home){
@@ -118,20 +119,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*my弹窗*/
     public void showPopFormBottom(){
 
-        takePhotoPopWin  = new TakePhotoPopWin(this,onClickListener);
-        takePhotoPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER,0,0);
+        myPopWin = new myPopWin(this,onClickListener);
+        myPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER,0,0);
     }
     private final View.OnClickListener onClickListener = v -> {
         int id = v.getId();
         if(id == R.id.login){
-            takePhotoPopWin.dismiss();
+            myPopWin.dismiss();
             startActivity(new Intent(MainActivity.this, chooseLoginRegister.class));
         }else if(id == R.id.add_bookmark){
             Toast.makeText(mContext, "添加书签功能开发中", Toast.LENGTH_SHORT).show();
         }else if(id == R.id.bookmark){
             startActivity(new Intent(MainActivity.this, bookmark.class));
         }else if(id == R.id.history){
-            takePhotoPopWin.dismiss();
+            myPopWin.dismiss();
             startActivity(new Intent(MainActivity.this, history.class));
         }else if(id == R.id.exit){
             Toast.makeText(mContext, "退出登录功能开发中", Toast.LENGTH_SHORT).show();

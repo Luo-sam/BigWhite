@@ -1,6 +1,7 @@
 package com.webbrowser.bigwhite.View.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,29 +22,28 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.R;
-import com.webbrowser.bigwhite.activity.TakePhotoPopWin;
+import com.webbrowser.bigwhite.activity.popWindows.myPopWin;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchFragment extends Fragment implements View.OnClickListener {
+    @SuppressLint("StaticFieldLeak")
+    private static WebView webView;
+
     private InputMethodManager manager;
+
     /*对mContext初始化*/
-    private final Context mContext = getActivity();
-    public WebView webView;
+    private final Context mContext = getContext();
     private ProgressBar progressBar;
     private EditText textUrl;
     private ImageView webIcon;
@@ -52,6 +53,14 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private static final String HTTP="http://";
     private static final String HTTPS="https://";
     private static final int PRESS_BACK_EXIT_GAP=2000;
+
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity=activity;
+    }
 
     @Nullable
     @Override
@@ -87,6 +96,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     webIcon.setImageResource(R.drawable.internet);
                     //显示搜索按钮
                     btnStart.setImageResource(R.drawable.search);
+                    /*显示搜索历史记录弹窗*/
+                    showDownSearchHistory(view);
                 }else{
                     //显示网站名
                     textUrl.setText(webView.getTitle());
@@ -109,6 +120,18 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
+    /*搜索历史记录弹窗*/
+    public void showDownSearchHistory(View view){
+        /*个人栏弹窗*/
+        com.webbrowser.bigwhite.activity.popWindows.myPopWin myPopWin = new myPopWin(mActivity, onClickListener);
+        myPopWin.showAtLocation(view.findViewById(R.id.textUrl), Gravity.CENTER,0,0);
+    }
+    private final View.OnClickListener onClickListener = v -> {
+        int id = v.getId();
+    };
+
+
     /*初始化webView*/
     @SuppressLint("SetJavaScriptEnabled")
     private void initWeb(View view){
@@ -228,6 +251,15 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         isUrl = mat.matches();
         return isUrl;
     }
+
+
+    /*实现webView的goBack效果*/
+    public static void goToBack(){
+        webView.goBack();
+    }
+
+
+
     /*解决视频声音问题的方法*/
     @Override
     public void onPause() {
