@@ -1,14 +1,22 @@
 package com.webbrowser.bigwhite.Model.SQLite;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.webbrowser.bigwhite.Model.data.historyData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class historyDao {
 
     private static final String TAG = "SQL_history";
     /*列定义*/
-    private final String[] HISTORY_COLUMNS = new String[]{"Name", "Age"};
+    private final String[] HISTORY_COLUMNS = new String[]{"Id","Name", "Age"};
     /*操作类存储的数据*/
     private Context context;
     private  historyHelper historyHelper;
@@ -24,16 +32,52 @@ public class historyDao {
         try{
             db = historyHelper.getWritableDatabase();
             db.beginTransaction();
-            db.execSQL("insert into " + historyHelper.TABLE_NAME_HISTORY + " (Name,Address) value ('百度','www.baidu.com')");
+            db.execSQL("INSERT INTO " + historyHelper.TABLE_NAME_HISTORY + " (Name,Address) " +
+                    "VALUES ('百度','www.baidu.com');");
+            Log.d(TAG, historyHelper.TABLE_NAME_HISTORY);
             db.setTransactionSuccessful();
+            Log.d(TAG, "initHistory: 成功");
         }catch (Exception e){
-            Log.d(TAG,"初始化错误");
+            Log.d(TAG,"init：失败");
         }finally {
-            if(db!=null){
+            if(db!=null&&db.inTransaction()){
                db.endTransaction();
                db.close();
             }
         }
     }
-
+    /*添加记录*/
+    public void addHistory(historyData historyData){
+        SQLiteDatabase db = null;
+        try{
+            db = historyHelper.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("Name",historyData.getName());
+            contentValues.put("Address",historyData.getAddress());
+            Log.d("add data", "insert");
+            db.insertOrThrow(historyHelper.TABLE_NAME_HISTORY,null,contentValues);
+            Log.d("add data", "true");
+        }catch (Exception e){
+            Log.e(TAG, "add error", e);
+        }finally {
+            if(db!=null&&db.inTransaction()){
+                db.endTransaction();
+                db.close();
+            }
+        }
+    }
+    /*得到所有历史记录*/
+    public List<historyData> queryHistory(){
+        SQLiteDatabase db = historyHelper.getWritableDatabase();
+        List<historyData> list = new ArrayList<>();
+        Cursor cursor = db.query(historyHelper.TABLE_NAME_HISTORY,null,null,null,null,null,null);
+        if(cursor.moveToFirst()){
+            do {
+                String name = cursor.getString((cursor.getColumnIndex("Name")));
+                String address = cursor.getString((cursor.getColumnIndex("Address")));
+                list.add(new historyData(name,address));
+            }while (cursor.moveToNext());
+        }
+        return list;
+    }
 }

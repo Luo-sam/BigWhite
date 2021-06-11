@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class historyHelper extends SQLiteOpenHelper {
-    public String TABLE_NAME_HISTORY = "history";
+    public String TABLE_NAME_HISTORY = "myhistory";
     /*设置初始值*/
-    private static final String name = "history.db";
+    private static final String name = "myhistory.db";
     private static final int version = 1;
     public historyHelper(@Nullable Context context) {
         super(context, name, null, version);
@@ -20,7 +20,8 @@ public class historyHelper extends SQLiteOpenHelper {
     * */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql_history =  "create table if not exists "+ TABLE_NAME_HISTORY +" ( Name text, Address text)";
+        String sql_history =   "create table if not exists " + TABLE_NAME_HISTORY +
+                " (Name char(20), Address char(20));";
         db.execSQL(sql_history);
     }
 

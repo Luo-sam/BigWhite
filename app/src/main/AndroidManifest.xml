@@ -30,6 +30,8 @@
         <activity android:name=".activity.login"/>
         <activity android:name=".activity.multiwindows"/>
         <activity android:name=".activity.register"/>
+        <activity android:name=".activity.chooseLoginRegister"/>
+        <activity android:name=".activity.searchHistory"/>
     </application>
 
 </manifest>

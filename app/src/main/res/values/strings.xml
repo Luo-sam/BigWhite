@@ -13,4 +13,9 @@
     <string name="back">返回</string>
     <string name="history_title">History</string>
     <string name="pic">图标</string>
+    <string name="register">注册</string>
+    <string name="account_hint">请输入用户名</string>
+    <string name="key_hint">请输入密码</string>
+    <string name="back_login">登录界面背景</string>
+    <string name="enter_password">请输入密码</string>
 </resources>
