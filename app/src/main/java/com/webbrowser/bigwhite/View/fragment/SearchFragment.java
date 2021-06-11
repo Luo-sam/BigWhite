@@ -230,17 +230,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     }
 
 
-
-
-    private static String getVerName(Context context){
-        String verName="unKnow";
-        try{
-            verName=context.getPackageManager().getPackageInfo(context.getPackageName(),0).versionName;
-        }catch (PackageManager.NameNotFoundException e){
-            e.printStackTrace();
-        }
-        return verName;
-    }
     public static boolean isHttpUrl(String urls){
         boolean isUrl;
         String regex = "(((https|http)?://)?([a-z0-9]+[.])|(www.))"
@@ -251,12 +240,15 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         isUrl = mat.matches();
         return isUrl;
     }
-
-
     /*实现webView的goBack效果*/
     public static void goToBack(){
         webView.goBack();
     }
+    /*实现webView的goForward效果*/
+    public static void goToForward(){
+        webView.goForward();
+    }
+
 
 
 

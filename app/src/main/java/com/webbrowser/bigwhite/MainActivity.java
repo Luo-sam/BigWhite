@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(id == R.id.backLeft){
             SearchFragment.goToBack();
         }else if(id == R.id.backRight){
-//            webView.goForward();
+            SearchFragment.goToForward();
         }else if(id == R.id.home){
             Intent intent=new Intent(this,MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
