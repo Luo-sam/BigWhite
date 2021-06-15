@@ -17,7 +17,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -105,7 +104,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         /*对两个页面的初始化*/
         web = view.findViewById(R.id.web);
         searchHis = view.findViewById(R.id.search_his);
-        searchHis.setVisibility(View.GONE);
+        searchHis.setVisibility(View.GONE);//隐藏
 
         /*键盘事件绑定*/
         manager=(InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);

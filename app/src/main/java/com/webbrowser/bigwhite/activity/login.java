@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.utils.editTextUtils;
 import com.webbrowser.bigwhite.utils.httpUtils;
