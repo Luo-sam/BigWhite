@@ -2,14 +2,12 @@ package com.webbrowser.bigwhite.View.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,45 +17,56 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.R;
-import com.webbrowser.bigwhite.activity.popWindows.myPopWin;
+import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class SearchFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     private static WebView webView;
-
+    private View view;
     private InputMethodManager manager;
 
-    /*对mContext初始化*/
-    private final Context mContext = getContext();
+    private FrameLayout web;
+    private LinearLayout searchHis;
+    private List<String> data;
+    private List<String> temList;
+
     private ProgressBar progressBar;
     private EditText textUrl;
     private ImageView webIcon;
     private ImageView btnStart;
+    private RecordsDao sc;
 
-    private final long exitTime=0;
     private static final String HTTP="http://";
     private static final String HTTPS="https://";
-    private static final int PRESS_BACK_EXIT_GAP=2000;
 
     private Activity mActivity;
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         mActivity=activity;
     }
@@ -65,78 +74,92 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.web_search,container,false);
+        view = inflater.inflate(R.layout.web_search,container,false);
+        sc = new RecordsDao(mActivity);
         initView(view);
-        initWeb(view);
+        initWeb();
+        initList();
         return view;
+    }
+
+    /*初始化搜索历史*/
+    private void initList() {
+        data = new ArrayList<>();
+        temList = sc.getRecordsList();
+        reversedList();
+        searchHistoryAdapter scAdapter = new searchHistoryAdapter(mActivity,data);
+        ListView scList  = view.findViewById(R.id.sc_history_list);
+        scList.setAdapter(scAdapter);
+
+        scList.setOnItemClickListener((parent, view, position, id) -> {
+            textUrl.setText(data.get(position));
+            btnStart.callOnClick();
+            textUrl.clearFocus();
+            Toast.makeText(mActivity,data.get(position),Toast.LENGTH_SHORT).show();
+        });
+
     }
 
     /*初始化得到的view*/
     private void initView(View view){
+        /*对两个页面的初始化*/
+        web = view.findViewById(R.id.web);
+        searchHis = view.findViewById(R.id.search_his);
+        searchHis.setVisibility(View.GONE);
+
         /*键盘事件绑定*/
-        manager=(InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
+        manager=(InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         /*搜索ID的获取*/
         webView= view.findViewById(R.id.webView);
         btnStart= view.findViewById(R.id.btnStart);
         textUrl= view.findViewById(R.id.textUrl);
         progressBar= view.findViewById(R.id.progressBar);
         webIcon= view.findViewById(R.id.webIcon);
+        TextView clear = view.findViewById(R.id.clear);
         /*绑定点击事件*/
         btnStart.setOnClickListener(this);
+        /*设置webIcon的点击事件返回*/
+        webIcon.setOnClickListener(this);
+        /*绑定清空搜索历史功能*/
+        clear.setOnClickListener(this);
         //地址输入栏获取和失去焦点处理
-        textUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if(hasFocus){
-                    //显示当前网页的网址
-                    textUrl.setText(webView.getUrl());
-                    //将光标置于末尾
-                    textUrl.setSelection(textUrl.getText().length());
-                    //显示internet的图标
-                    webIcon.setImageResource(R.drawable.internet);
-                    //显示搜索按钮
-                    btnStart.setImageResource(R.drawable.search);
-                    /*显示搜索历史记录弹窗*/
-                    showDownSearchHistory(view);
-                }else{
-                    //显示网站名
-                    textUrl.setText(webView.getTitle());
-                    //显示网站图标
-                    webIcon.setImageBitmap(webView.getFavicon());
-                    //显示刷新按钮
-                    btnStart.setImageResource(R.drawable.refresh);
-                }
+        textUrl.setOnFocusChangeListener((popView, hasFocus) -> {
+            if(hasFocus){
+                //显示back的图标
+                webIcon.setImageResource(R.drawable.left);
+                //显示搜索按钮
+                btnStart.setImageResource(R.drawable.search);
+                /*设置点击搜索获取焦距后使得搜索历史的layout界面出现*/
+                web.setVisibility(View.GONE);
+                searchHis.setVisibility(View.VISIBLE);
+
+            }else{
+                //显示网站名
+                textUrl.setText(webView.getTitle());
+                //显示网站图标
+                webIcon.setImageBitmap(webView.getFavicon());
+                //显示刷新按钮
+                btnStart.setImageResource(R.drawable.refresh);
+                /*当失去焦距时，显示的界面切换*/
+                web.setVisibility(View.VISIBLE);
+                searchHis.setVisibility(View.GONE);
             }
         });
-        textUrl.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode== KeyEvent.KEYCODE_ENTER &&event.getAction()== KeyEvent.ACTION_DOWN){
-                    //执行搜索
-                    btnStart.callOnClick();
-                    textUrl.clearFocus();
-                }
-                return false;
+        textUrl.setOnKeyListener((v, keyCode, event) -> {
+            if(keyCode== KeyEvent.KEYCODE_ENTER &&event.getAction()== KeyEvent.ACTION_DOWN){
+                //执行搜索
+                btnStart.callOnClick();
+                textUrl.clearFocus();
             }
+            return false;
         });
     }
-
-    /*搜索历史记录弹窗*/
-    public void showDownSearchHistory(View view){
-        /*个人栏弹窗*/
-        com.webbrowser.bigwhite.activity.popWindows.myPopWin myPopWin = new myPopWin(mActivity, onClickListener);
-        myPopWin.showAtLocation(view.findViewById(R.id.textUrl), Gravity.CENTER,0,0);
-    }
-    private final View.OnClickListener onClickListener = v -> {
-        int id = v.getId();
-    };
-
 
     /*初始化webView*/
     @SuppressLint("SetJavaScriptEnabled")
-    private void initWeb(View view){
+    private void initWeb(){
         webView.setWebViewClient(new MkWebViewClient());
-        webView.setWebChromeClient(new MkWebChormeClient());
+        webView.setWebChromeClient(new MkWebChromeClient());
         WebSettings settings=webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setUserAgentString(settings.getUserAgentString()+"mkBrowser");
@@ -195,12 +218,12 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             // 网页加载完毕，隐藏进度条
             progressBar.setVisibility(View.INVISIBLE);
             // 改变标题
-            getActivity().setTitle(webView.getTitle());
+            mActivity.setTitle(webView.getTitle());
             // 显示页面标题
             textUrl.setText(webView.getTitle());
         }
     }
-    private class MkWebChormeClient extends WebChromeClient {
+    private class MkWebChromeClient extends WebChromeClient {
         private final  static int WEB_PROGRESS_MAX=100;
         @Override
         public void onProgressChanged(WebView view,int newProgress){
@@ -223,7 +246,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onReceivedTitle(WebView view,String title){
             super.onReceivedTitle(view,title);
-            getActivity().setTitle(title);
+            mActivity.setTitle(title);
             textUrl.setText(title);
         }
 
@@ -248,9 +271,17 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     public static void goToForward(){
         webView.goForward();
     }
-
-
-
+    /*判断webView是否可以goBack*/
+    public static boolean canBack(){
+        return webView.canGoBack();
+    }
+    /*颠倒list顺序，用户输入的信息会从上依次往下显示*/
+    private void reversedList(){
+        data.clear();
+        for(int i = temList.size() - 1 ; i >= 0 ; i --) {
+            data.add(temList.get(i));
+        }
+    }
 
     /*解决视频声音问题的方法*/
     @Override
@@ -284,6 +315,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                             (textUrl.getApplicationWindowToken(),0);
                 }
                 String input = textUrl.getText().toString();
+                sc.addRecords(input);
+                initList();
                 if(!isHttpUrl(input)){
                     try {
                         input= URLEncoder.encode(input,"utf-8");
@@ -298,7 +331,28 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 webView.reload();
             }
         }
+        if(id ==R.id.webIcon){
+            if (textUrl.hasFocus()){
+                //隐藏软键盘
+                if(manager.isActive()){
+                    manager.hideSoftInputFromWindow
+                            (textUrl.getApplicationWindowToken(),0);
+                }
+                textUrl.clearFocus();
+            }
+        }
+        if(id == R.id.clear){
+            AlertDialog.Builder clearSure = new AlertDialog.Builder(mActivity);
+            clearSure.setPositiveButton("确认",
+                    (dialog, which) -> {
+                        sc.deleteAllRecords();
+                        SearchFragment.this.initList();
+                    });
+
+            clearSure.setNegativeButton("取消",(dialog, which) -> dialog.dismiss());
+            clearSure.setTitle("提示");
+            clearSure.setMessage("您确认清空搜索历史吗");
+            clearSure.show();
+        }
     }
-
-
 }

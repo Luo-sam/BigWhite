@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
@@ -21,11 +22,13 @@ public class myPopWin extends PopupWindow {
         this.view = LayoutInflater.from(mContext).inflate(R.layout.my_pop, null);
 
         Button login, addBookmark,bookMark,history,exit;
+        LinearLayout layout;
         login = view.findViewById(R.id.login);
         addBookmark = view.findViewById(R.id.add_bookmark);
         bookMark = view.findViewById(R.id.bookmark);
         history = view.findViewById(R.id.history);
         exit = view.findViewById(R.id.exit);
+        layout = view.findViewById(R.id.my_pop_layout);
         // 设置按钮监听
         login.setOnClickListener(itemsOnClick);
         addBookmark.setOnClickListener(itemsOnClick);
@@ -37,10 +40,17 @@ public class myPopWin extends PopupWindow {
         this.setOutsideTouchable(true);
         // mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
         this.view.setOnTouchListener((v, event) -> {
-            int height = view.findViewById(R.id.pop_layout).getTop();
-            int y = (int) event.getY();
+
+
+            int height = layout.getTop();
+            int bottom = layout.getBottom();
+
+            int yH = (int) event.getY();
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                if (y < height) {
+                if (yH < height) {
+                    dismiss();
+                }
+                if (yH > bottom) {
                     dismiss();
                 }
             }

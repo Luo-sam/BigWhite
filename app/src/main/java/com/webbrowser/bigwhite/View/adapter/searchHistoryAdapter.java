@@ -21,12 +21,10 @@ import java.util.List;
  */
 public class searchHistoryAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<String> searchRecordsList;
-    private LayoutInflater inflater;
+    private final List<String> searchRecordsList;
+    private final LayoutInflater inflater;
 
     public searchHistoryAdapter(Context context, List<String> searchRecordsList) {
-        this.context = context;
         this.searchRecordsList = searchRecordsList;
         inflater = LayoutInflater.from(context);
     }
@@ -53,7 +51,7 @@ public class searchHistoryAdapter extends BaseAdapter {
         if(null == convertView){
             viewHolder = new ViewHolder();
             convertView = inflater.inflate(R.layout.list_item,null);
-            viewHolder.recordTv = (TextView) convertView.findViewById(R.id.search_content_tv);
+            viewHolder.recordTv = convertView.findViewById(R.id.search_content_tv);
 
             convertView.setTag(viewHolder);
         }else{
@@ -66,7 +64,7 @@ public class searchHistoryAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         TextView recordTv;
     }
 }

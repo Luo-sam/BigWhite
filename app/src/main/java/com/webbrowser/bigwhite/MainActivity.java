@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager viewPager;
     public List<Fragment> fragments;
 
+
+    /*点击返回键调用*/
+    private long exitTime=0;
+    private static final int PRESS_BACK_EXIT_GAP=2000;
+
     /*onCreate方法*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,28 +105,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-//    @Override
-//    public void onBackPressed(){
-//        //返回上一页
-//        if(webView.canGoBack()){
-//            webView.goBack();
-//        }else{
-//            if((System.currentTimeMillis()-exitTime)>PRESS_BACK_EXIT_GAP){
-//                //点击两次就退出
-//                Toast.makeText(mContext,"再按一次退出浏览器",Toast.LENGTH_SHORT).show();
-//                exitTime=System.currentTimeMillis();
-//            }else {
-//                super.onBackPressed();
-//            }
-//        }
-//    }
+    @Override
+    public void onBackPressed(){
+        //返回上一页
+        if(SearchFragment.canBack()){
+            SearchFragment.goToBack();
+        }else{
+            if((System.currentTimeMillis()-exitTime)>PRESS_BACK_EXIT_GAP){
+                //点击两次就退出
+                Toast.makeText(mContext,"再按一次退出浏览器",Toast.LENGTH_SHORT).show();
+                exitTime=System.currentTimeMillis();
+            }else {
+                super.onBackPressed();
+            }
+        }
+    }
 
     /*my弹窗*/
     public void showPopFormBottom(){
-
         myPopWin = new myPopWin(this,onClickListener);
         myPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER,0,0);
     }
+
+
+
     private final View.OnClickListener onClickListener = v -> {
         int id = v.getId();
         if(id == R.id.login){

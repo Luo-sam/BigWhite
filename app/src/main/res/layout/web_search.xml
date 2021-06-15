@@ -6,23 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical">
+    <!--搜索框-->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:layout_marginTop="1dp">
+        android:layout_marginTop="1dp"
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/webIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="#01000000"
-            android:contentDescription="favicon"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:padding="11dp"
-            app:srcCompat="@drawable/internet" />
+            android:contentDescription="@string/back"
+            android:padding="8dp"
+            app:srcCompat="@drawable/left" />
 
         <EditText
             android:id="@+id/textUrl"
@@ -37,22 +37,23 @@
             android:maxLines="1"
             android:textColor="#606060"
             android:textColorHint="#9f9f9f"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:autofillHints="xxx" />
 
         <ImageView
             android:id="@+id/btnStart"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginRight="2dp"
+            android:layout_marginEnd="2dp"
             android:background="#01000000"
-            android:contentDescription="refresh"
+            android:contentDescription="@string/startSearch"
             android:padding="11dp"
-            app:srcCompat="@drawable/refresh" />
+            app:srcCompat="@drawable/search" />
 
     </LinearLayout>
-
+    <!--网络搜索结果-->
     <FrameLayout
-        android:id="@+id/frameLayout"
+        android:id="@+id/web"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"
@@ -70,8 +71,55 @@
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"/>
 
-        </WebView>
     </FrameLayout>
+
+    <!--搜索历史-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/search_his">
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/search_his_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/searchHis_title"/>
+            <TextView
+                android:id="@+id/clear"
+                android:gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:text="@string/clear"
+                tools:ignore="RtlHardcoded,RtlSymmetry" />
+        </LinearLayout>
+        <LinearLayout
+            android:background="@color/white"
+            android:id="@+id/pop_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+
+            <ListView
+                android:id="@+id/sc_history_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/line_bot_full" />
+        </LinearLayout>
+    </LinearLayout>
+
+
 </RelativeLayout>

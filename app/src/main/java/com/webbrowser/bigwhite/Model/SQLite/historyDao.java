@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.webbrowser.bigwhite.Model.data.historyData;
 
@@ -17,12 +16,10 @@ public class historyDao {
     private static final String TAG = "SQL_history";
     /*列定义*/
     private final String[] HISTORY_COLUMNS = new String[]{"Id","Name", "Age"};
-    /*操作类存储的数据*/
-    private Context context;
-    private  historyHelper historyHelper;
+    private final historyHelper historyHelper;
     /*构造函数*/
     public historyDao(Context context){
-        this.context = context;
+        /*操作类存储的数据*/
         historyHelper = new historyHelper(context);
     }
 
@@ -54,9 +51,7 @@ public class historyDao {
             ContentValues contentValues = new ContentValues();
             contentValues.put("Name",historyData.getName());
             contentValues.put("Address",historyData.getAddress());
-            Log.d("add data", "insert");
             db.insertOrThrow(historyHelper.TABLE_NAME_HISTORY,null,contentValues);
-            Log.d("add data", "true");
         }catch (Exception e){
             Log.e(TAG, "add error", e);
         }finally {

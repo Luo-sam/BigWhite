@@ -1,10 +1,6 @@
 package com.webbrowser.bigwhite.Model.SQLite;
 
 
-/**
- * Created by Administrator on 2018/2/11.
- */
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,14 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 搜索记录操作类
- * Created by 05 on 2016/7/27.
- */
 public class RecordsDao {
-    RecordSQLiteOpenHelper recordHelper;
+    private final RecordSQLiteOpenHelper recordHelper;
 
-    SQLiteDatabase recordsDb;
+    private SQLiteDatabase recordsDb;
 
     public RecordsDao(Context context) {
         recordHelper = new RecordSQLiteOpenHelper(context);
@@ -30,28 +22,28 @@ public class RecordsDao {
     public void addRecords(String record) {
 
         if (!isHasRecord(record)) {
-            recordsDb = recordHelper.getReadableDatabase();
+            SQLiteDatabase db = recordHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put("name", record);
             //添加
-            recordsDb.insert("records", null, values);
+            db.insert("records", null, values);
             //关闭
-            recordsDb.close();
+            db.close();
         }
     }
 
     //判断是否含有该搜索记录
     public boolean isHasRecord(String record) {
         boolean isHasRecord = false;
-        recordsDb = recordHelper.getReadableDatabase();
-        Cursor cursor = recordsDb.query("records", null, null, null, null, null, null);
+        SQLiteDatabase db = recordHelper.getWritableDatabase();
+        Cursor cursor = db.query("records", null, null, null, null, null, null);
         while (cursor.moveToNext()) {
             if (record.equals(cursor.getString(cursor.getColumnIndexOrThrow("name")))) {
                 isHasRecord = true;
             }
         }
         //关闭数据库
-        recordsDb.close();
+        db.close();
         cursor.close();
         return isHasRecord;
     }

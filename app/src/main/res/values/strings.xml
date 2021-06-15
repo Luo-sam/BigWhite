@@ -18,4 +18,7 @@
     <string name="key_hint">请输入密码</string>
     <string name="back_login">登录界面背景</string>
     <string name="enter_password">请输入密码</string>
+    <string name="searchHis_title">搜索历史</string>
+    <string name="clear">清空</string>
+    <string name="startSearch">startSearch</string>
 </resources>

@@ -12,7 +12,6 @@
             android:id="@+id/search_content_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher_round"
             android:drawablePadding="8dp"
             android:layout_margin="10dp"
             android:layout_gravity="center_vertical"
