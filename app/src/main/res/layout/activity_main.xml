@@ -13,6 +13,51 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
+
+    <LinearLayout
+        android:visibility="gone"
+        android:background="#AA9E9E9E"
+        android:id="@+id/select_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/clear_list"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <ImageView
+                android:onClick="list_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/left"
+                android:contentDescription="@string/back"
+                tools:ignore="UsingOnClickInXml" />
+        </LinearLayout>
+
+
+        <ListView
+            android:layout_marginBottom="100dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/file_list"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:divider="@drawable/line_bot_full" />
+        <TextView
+            android:id="@+id/add_file"
+            android:textSize="@dimen/size_20sp"
+            android:gravity="center"
+            android:text="@string/new_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
     <!--底部导航栏-->
     <LinearLayout
         android:id="@+id/navigation_bar"

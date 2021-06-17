@@ -20,16 +20,13 @@ public class RecordsDao {
 
     //添加搜索记录
     public void addRecords(String record) {
-
-        if (!isHasRecord(record)) {
-            SQLiteDatabase db = recordHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put("name", record);
-            //添加
-            db.insert("records", null, values);
-            //关闭
-            db.close();
-        }
+        SQLiteDatabase db = recordHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", record);
+        //添加
+        db.insert("records", null, values);
+        //关闭
+        db.close();
     }
 
     //判断是否含有该搜索记录

@@ -21,4 +21,6 @@
     <string name="searchHis_title">搜索历史</string>
     <string name="clear">清空</string>
     <string name="startSearch">startSearch</string>
+    <string name="bookmark_title">Bookmark</string>
+    <string name="new_file">添加文件夹</string>
 </resources>

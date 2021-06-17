@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.activity.popWindows;
+package com.webbrowser.bigwhite.utils.popWindows;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
-import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.R;
 
 public class myPopWin extends PopupWindow {

@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,21 +33,38 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
+import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
+import com.webbrowser.bigwhite.Model.SQLite.historyDao;
+import com.webbrowser.bigwhite.Model.data.historyData;
+import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
+import com.webbrowser.bigwhite.activity.login;
+import com.webbrowser.bigwhite.utils.httpUtils;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.hutool.http.HttpUtil;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class SearchFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
-    private static WebView webView;
+    private WebView webView;
     private View view;
     private InputMethodManager manager;
 
@@ -52,18 +72,30 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private LinearLayout searchHis;
     private List<String> data;
     private List<String> temList;
+    private RecordsDao sc;
 
     private ProgressBar progressBar;
     private EditText textUrl;
     private ImageView webIcon;
     private ImageView btnStart;
-    private RecordsDao sc;
+
+    /*上传用的token*/
+    private String token;
+
+
+
+    /*历史记录*/
+    private historyDao history;
+
 
     private static final String HTTP="http://";
     private static final String HTTPS="https://";
 
     private Activity mActivity;
 
+    public WebView getWebView() {
+        return webView;
+    }
     @Override
     public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
@@ -78,7 +110,12 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         initView(view);
         initWeb();
         initList();
+        initHistory();
         return view;
+    }
+
+    private void initHistory() {
+        history = new historyDao(mActivity);
     }
 
     /*初始化搜索历史*/
@@ -124,6 +161,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         //地址输入栏获取和失去焦点处理
         textUrl.setOnFocusChangeListener((popView, hasFocus) -> {
             if(hasFocus){
+                //设置聚焦时为网址
+                textUrl.setText(webView.getUrl());
                 //显示back的图标
                 webIcon.setImageResource(R.drawable.left);
                 //显示搜索按钮
@@ -220,6 +259,43 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             mActivity.setTitle(webView.getTitle());
             // 显示页面标题
             textUrl.setText(webView.getTitle());
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String name = textUrl.getText().toString().trim();
+                    String address = webView.getUrl();
+                    /*添加到本地仓库*/
+                    history.addHistory(new historyData(name,address));
+                    /*添加到远程仓库*/
+                    SharedPreferences sp = mActivity.getSharedPreferences("sp_list",MODE_PRIVATE);
+                    String head = sp.getString("token","");
+//                    if (!name.equals("百度一下")) {
+//                        httpUtils.putHistory(head, "http://139.196.180.89:8137/api/v1/histories", name, address, new Callback() {
+//                            @Override
+//                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                                Log.d("his","failure");
+//                            }
+//
+//                            @Override
+//                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                                /*得到的服务器返回值具体内容*/
+//                                assert response.body() != null;
+//                                final String responseData = response.body().string();
+//                                mActivity.runOnUiThread(()-> Log.d("his", responseData));
+//                                Gson gson = new Gson();
+//                                responseData_put responsePut = gson.fromJson(responseData,responseData_put.class);
+//                                if(responsePut.getState().getCode() == 0){
+//                                    Log.d("his","success");
+//                                }else {
+//                                    startActivity(new Intent(getActivity(), login.class));
+//                                }
+//                            }
+//                        });
+//                    }
+                }
+            }, 4000);
         }
     }
     private class MkWebChromeClient extends WebChromeClient {
@@ -247,6 +323,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             super.onReceivedTitle(view,title);
             mActivity.setTitle(title);
             textUrl.setText(title);
+
+
         }
 
     }
@@ -262,17 +340,14 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         isUrl = mat.matches();
         return isUrl;
     }
-    /*实现webView的goBack效果*/
-    public static void goToBack(){
-        webView.goBack();
-    }
-    /*实现webView的goForward效果*/
-    public static void goToForward(){
-        webView.goForward();
-    }
-    /*判断webView是否可以goBack*/
-    public static boolean canBack(){
-        return webView.canGoBack();
+    private static boolean iswwwbutNOHttp(String input) {
+        boolean isUrl;
+        String regex = "(([a-z0-9]+[.])|(www.))"
+                + "\\w+[.|\\/]([a-z0-9]{0,})?[[.]([a-z0-9]{0,})]+((/[\\S&&[^,;\u4E00-\u9FA5]]+)+)?([.][a-z0-9]{0,}+|/?)";
+        Pattern pat = Pattern.compile(regex.trim());
+        Matcher mat = pat.matcher(input.trim());
+        isUrl = mat.matches();
+        return isUrl;
     }
     /*颠倒list顺序，用户输入的信息会从上依次往下显示*/
     private void reversedList(){
@@ -323,6 +398,15 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         e.printStackTrace();
                     }
                     input="https://www.baidu.com/s?wd="+input+"&ie=UTF-8";
+                }
+                if (iswwwbutNOHttp(input)){
+                    try {
+                        // URL 编码
+                        input = URLEncoder.encode(input, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    input = "https://"+input;
                 }
                 webView.loadUrl(input);
                 textUrl.clearFocus();

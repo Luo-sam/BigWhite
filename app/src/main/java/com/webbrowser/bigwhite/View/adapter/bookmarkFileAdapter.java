@@ -1,6 +1,5 @@
 package com.webbrowser.bigwhite.View.adapter;
 
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,25 +11,24 @@ import com.webbrowser.bigwhite.R;
 
 import java.util.List;
 
-public class searchHistoryAdapter extends BaseAdapter {
-
-    private final List<String> searchRecordsList;
+public class bookmarkFileAdapter extends BaseAdapter {
+    private final List<String> fileList;
     private final LayoutInflater inflater;
 
-    public searchHistoryAdapter(Context context, List<String> searchRecordsList) {
-        this.searchRecordsList = searchRecordsList;
+
+    public bookmarkFileAdapter(Context context, List<String> fileList) {
+        this.fileList = fileList;
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        //设置listView的显示条目数量为5
-        return searchRecordsList.size() > 5 ? 5 : searchRecordsList.size();
+        return fileList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return searchRecordsList.size() == 0 ? null : searchRecordsList.get(position);
+        return fileList.size() == 0 ? null : fileList.get(position);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class searchHistoryAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if(null == convertView){
             viewHolder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.list_item,null);
+            convertView = inflater.inflate(R.layout.list_item_file,null);
             viewHolder.recordTv = convertView.findViewById(R.id.search_content_tv);
 
             convertView.setTag(viewHolder);
@@ -51,13 +49,13 @@ public class searchHistoryAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        String content = searchRecordsList.get(position);
+        String content = fileList.get(position);
         viewHolder.recordTv.setText(content);
 
         return convertView;
     }
-
     private static class ViewHolder {
         TextView recordTv;
     }
+
 }
