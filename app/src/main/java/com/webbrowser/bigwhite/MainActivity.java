@@ -380,7 +380,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         //隐藏添加按钮
         LinearLayout win_add = (LinearLayout) findViewById(R.id.multywin);
-        win_add.setVisibility(View.INVISIBLE);
+        win_add.setVisibility(View.GONE);
         //显示底部导航栏
         LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
         layout.setVisibility(View.VISIBLE);
@@ -418,7 +418,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         //隐藏添加按钮
         LinearLayout win_add = (LinearLayout) findViewById(R.id.multywin);
-        win_add.setVisibility(View.INVISIBLE);
+        win_add.setVisibility(View.GONE);
         //显示底部导航栏
         LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
         layout.setVisibility(View.VISIBLE);
