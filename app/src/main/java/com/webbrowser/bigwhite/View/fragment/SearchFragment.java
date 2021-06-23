@@ -32,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.gson.Gson;
 import com.webbrowser.bigwhite.MainActivity;
@@ -77,11 +78,14 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private List<String> temList;
     private RecordsDao sc;
 
+    private LinearLayout Liner_search;
+
     private ProgressBar progressBar;
     private EditText textUrl;
     private ImageView webIcon;
     private ImageView btnStart;
-    private MainActivity mainActivity;
+    private LinearLayout illegWebsite;
+    private TextView textView;
 
     /*上传用的token*/
     private String token;
@@ -96,6 +100,22 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private static final String HTTPS="https://";
 
     private Activity mActivity;
+
+    //返回非法网站页面
+    public LinearLayout getIllegWebsite() {
+        return illegWebsite;
+    }
+
+    //返回webview
+    public FrameLayout getWeb() {
+        return web;
+    }
+
+    //返回搜索栏
+
+    public LinearLayout getLiner_search() {
+        return Liner_search;
+    }
 
     public WebView getWebView() {
         return webView;
@@ -117,6 +137,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         initHistory();
         return view;
     }
+
+
 
     private void initHistory() {
         history = new historyDao(mActivity);
@@ -142,11 +164,18 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     /*初始化得到的view*/
     private void initView(View view){
-        mainActivity=(MainActivity)getActivity();
+        //mainActivity=(MainActivity)getActivity();
+        illegWebsite=view.findViewById(R.id.illeg);
+        illegWebsite.setVisibility(View.GONE);
+        textView=view.findViewById(R.id.goback);
+
         /*对两个页面的初始化*/
+        Liner_search = view.findViewById(R.id.linearLayout);
         web = view.findViewById(R.id.web);
         searchHis = view.findViewById(R.id.search_his);
         searchHis.setVisibility(View.GONE);//隐藏
+
+
 
         /*键盘事件绑定*/
         manager=(InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -163,6 +192,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         webIcon.setOnClickListener(this);
         /*绑定清空搜索历史功能*/
         clear.setOnClickListener(this);
+        textView.setOnClickListener(this);
         //地址输入栏获取和失去焦点处理
         textUrl.setOnFocusChangeListener((popView, hasFocus) -> {
             if(hasFocus){
@@ -252,8 +282,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 if(url.equals(data[i])){
                     Toast.makeText(getActivity(),"非法网站",Toast.LENGTH_LONG).show();
                     view.stopLoading();
-                    mainActivity.getViewPager().setVisibility(View.GONE);
-                    mainActivity.getFail().setVisibility(View.VISIBLE);
+                    Liner_search.setVisibility(View.GONE);
+                    web.setVisibility(View.GONE);
+                    searchHis.setVisibility(View.GONE);
+                    illegWebsite.setVisibility(View.VISIBLE);
+
                 }
             }
             super.onPageStarted(view,url,favicon);
@@ -396,6 +429,12 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        if(id==R.id.goback){
+            Toast.makeText(mActivity,"3666",Toast.LENGTH_SHORT).show();
+            illegWebsite.setVisibility(View.GONE);
+            Liner_search.setVisibility(View.VISIBLE);
+            web.setVisibility(View.VISIBLE);
+        }
         if(id==R.id.btnStart){
             if(textUrl.hasFocus()){
                 //隐藏软键盘

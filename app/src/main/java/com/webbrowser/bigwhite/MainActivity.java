@@ -61,13 +61,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private bookmarkDao bookmarkDao;
 
     private List<String> list_file;
-    private LinearLayout fail;
-    private TextView textView;
 
     /*搜索栏*/
     private MyViewPager viewPager;
     public List<Fragment> fragments;
     private SearchFragment sc;
+
 
     /*点击返回键调用*/
     private long exitTime=0;
@@ -91,18 +90,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initView();
     }
 
-    public LinearLayout getFail() {
-        return fail;
-    }
-
-    public ViewPager getViewPager() {
+    public MyViewPager getViewPager() {
         return viewPager;
     }
 
     private void initView(){
-        textView=findViewById(R.id.goback);
-        fail=findViewById(R.id.illeg);
-        fail.setVisibility(View.GONE);
+
         /*添加标签文件夹*/
         TextView add_file = findViewById(R.id.add_file);
         list_file = new ArrayList<>();
@@ -140,7 +133,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         home.setOnClickListener(this);
         morewindows.setOnClickListener(this);
         my.setOnClickListener(this);
-        textView.setOnClickListener(this);
 
         additon.setOnClickListener(this);
         add_file.setOnClickListener(this);
@@ -220,12 +212,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id==R.id.goback){
-            fail.setVisibility(View.GONE);
-            viewPager.setVisibility(View.VISIBLE);
-        }
         if(id == R.id.backLeft){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
+            if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
+                sc.getIllegWebsite().setVisibility(View.GONE);
+                sc.getLiner_search().setVisibility(View.VISIBLE);
+                sc.getWeb().setVisibility(View.VISIBLE);
+            }
             sc.getWebView().goBack();
         }else if(id == R.id.backRight){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
@@ -265,12 +258,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onBackPressed(){
-        if(fail.getVisibility()==View.VISIBLE){
-            fail.setVisibility(View.GONE);
-            viewPager.setVisibility(View.VISIBLE);
-        }
        //返回上一页
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
+        if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
+            sc.getIllegWebsite().setVisibility(View.GONE);
+            sc.getLiner_search().setVisibility(View.VISIBLE);
+            sc.getWeb().setVisibility(View.VISIBLE);
+        }
         if(sc.getWebView().canGoBack()){
             sc.getWebView().goBack();
         }else{
