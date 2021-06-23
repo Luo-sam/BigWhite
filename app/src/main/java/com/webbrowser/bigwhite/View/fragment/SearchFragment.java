@@ -34,10 +34,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
+import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.historyData;
+import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
 import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
@@ -79,6 +81,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private EditText textUrl;
     private ImageView webIcon;
     private ImageView btnStart;
+    private MainActivity mainActivity;
 
     /*上传用的token*/
     private String token;
@@ -139,6 +142,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     /*初始化得到的view*/
     private void initView(View view){
+        mainActivity=(MainActivity)getActivity();
         /*对两个页面的初始化*/
         web = view.findViewById(R.id.web);
         searchHis = view.findViewById(R.id.search_his);
@@ -242,6 +246,16 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         }
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon){
+            String[] data=new String[3];
+            data= ilLegWebsite.illegWebsite();
+            for(int i=0;i< data.length;i++){
+                if(url.equals(data[i])){
+                    Toast.makeText(getActivity(),"非法网站",Toast.LENGTH_LONG).show();
+                    view.stopLoading();
+                    mainActivity.getViewPager().setVisibility(View.GONE);
+                    mainActivity.getFail().setVisibility(View.VISIBLE);
+                }
+            }
             super.onPageStarted(view,url,favicon);
             // 网页开始加载，显示进度条
             progressBar.setProgress(0);
