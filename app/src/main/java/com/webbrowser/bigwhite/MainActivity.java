@@ -71,6 +71,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private long exitTime=0;
     private static final int PRESS_BACK_EXIT_GAP=2000;
 
+    /*主页初始layoutParams*/
+    ViewGroup.LayoutParams mylayoutParams;
+
+    /*页面初始间距*/
+    private int pageMargin;
+
     /*onCreate方法*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,9 +137,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         /*可以有多少个搜索fragment*/
 //        viewPager.setOffscreenPageLimit(10);
 
-        //设置页间距
-        viewPager.setPageMargin(40);
-
         fragments = new ArrayList<>();
         Fragment fragment = new SearchFragment();
 
@@ -142,6 +145,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         this.fragments.add(fragment);
 
         WebPageHelper.webpagelist = this.fragments;
+
 
         ((ViewGroup) viewPager.getParent()).setOnTouchListener(new View.OnTouchListener() {
             protected float point_x, point_y; //手指按下的位置
@@ -194,6 +198,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         viewPager.setAdapter(new SectionsPageAdapter(getSupportFragmentManager(), this.fragments));
 //        viewPager.setSwipeable(false);
+        //保存主页初始宽度
+        mylayoutParams =  viewPager.getLayoutParams();
+        pageMargin = viewPager.getPageMargin();
     }
 
     @Override
@@ -306,6 +313,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void initMultiWindowsView(){
 
+
         this.fragments = WebPageHelper.webpagelist;
 
         for (Fragment webViewFragment : this.fragments) {
@@ -326,24 +334,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         LinearLayout win_add = (LinearLayout) findViewById(R.id.multywin);
         //隐藏底部导航栏
-        layout.setVisibility(View.INVISIBLE);
+        layout.setVisibility(View.GONE);
 
         scaleWindow();
         //设置背景颜色为灰黑色
         LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xFF292727);
 
-        //设置页面左右间距
-        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-        WindowManager wm = (WindowManager) this
-                .getSystemService(Context.WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth();
-        layoutParams.width = width - 120;
-        viewPager.setLayoutParams(layoutParams);
+        //设置页间距
+        viewPager.setPageMargin(40);
+//        //设置页面左右间距
+//        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+//        WindowManager wm = (WindowManager) this
+//                .getSystemService(Context.WINDOW_SERVICE);
+//        int width = wm.getDefaultDisplay().getWidth();
+//        layoutParams.width = width - 120;
+//        viewPager.setLayoutParams(layoutParams);
+
         viewPager.setClipChildren(false);
 
         viewPager.setFullScreen(false);
-//        viewPager.setLayoutParams();
 
         //显示添加按钮
         win_add.setVisibility(View.VISIBLE);
@@ -390,6 +400,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //设置背景颜色为白色
         LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
+
+//        //设置页间距
+//        viewPager.setPageMargin(pageMargin);
+//        Log.d("margin", ""+pageMargin);
+////        //设置页面左右间距
+//        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+//        WindowManager wm = (WindowManager) this
+//                .getSystemService(Context.WINDOW_SERVICE);
+//        layoutParams.width = wm.getDefaultDisplay().getWidth();
+//        viewPager.setLayoutParams(layoutParams);
+
+
         viewPager.setClipChildren(true);
         viewPager.setFullScreen(true);
     }
@@ -428,6 +450,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //设置背景颜色为白色
         LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
+
+//        //设置页间距
+//        viewPager.setPageMargin(pageMargin);
+//
+//        //设置页面左右间距
+//        viewPager.setLayoutParams(mylayoutParams);
+//
         viewPager.setClipChildren(true);
         viewPager.setFullScreen(true);
     }
