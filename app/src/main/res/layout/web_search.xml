@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical">
+
+
     <!--搜索框-->
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -69,7 +71,7 @@
             android:max="100"
             android:progress="50" />
 
-        <WebView
+        <com.webbrowser.bigwhite.widget.MingWebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

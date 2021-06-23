@@ -1,17 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F4F2F2"
+    android:clipChildren="false"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:id="@+id/main_activity">
 
     <!--搜索实现-->
-    <androidx.viewpager.widget.ViewPager
+
+    <com.webbrowser.bigwhite.View.viewpager.MyViewPager
         android:id="@+id/viewPager"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
+        android:clipChildren="false"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="1dp"
+        android:gravity="center">
+
+    <!--新增窗口按钮-->
+    <LinearLayout
+        android:id="@+id/multywin"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/add_win"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/add"
+            android:contentDescription="@string/add_win" />
+    </LinearLayout>
+
+
 
 
     <LinearLayout
@@ -59,6 +94,7 @@
 
 
     <!--底部导航栏-->
+
     <LinearLayout
         android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
@@ -142,6 +178,10 @@
                 android:background="@drawable/my"
                 android:contentDescription="@string/my_pop" />
         </LinearLayout>
+
+
+
+    </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>
