@@ -43,6 +43,7 @@ import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
 import com.webbrowser.bigwhite.activity.login;
 import com.webbrowser.bigwhite.utils.httpUtils;
+import com.webbrowser.bigwhite.widget.MingWebView;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -64,7 +65,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SearchFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
-    private WebView webView;
+    private MingWebView webView;
     private View view;
     private InputMethodManager manager;
 
@@ -437,5 +438,9 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             clearSure.setMessage("您确认清空搜索历史吗");
             clearSure.show();
         }
+    }
+
+    public void setWebView(MingWebView webView) {
+        this.webView = webView;
     }
 }
