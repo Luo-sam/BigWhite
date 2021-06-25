@@ -1,8 +1,10 @@
 package com.webbrowser.bigwhite.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +37,13 @@ public class history extends AppCompatActivity {
         historyAdapter historyAdapter = new historyAdapter(history.this, R.layout.h_b_item,data);
         ListView historyList = findViewById(R.id.history_list);
         historyList.setAdapter(historyAdapter);
+        historyList.setOnItemClickListener((parent, view, position, id) -> {
+            String address = data.get(position).getAddress();
+            Intent intent = new Intent();
+            intent.putExtra("address",address);
+            history.this.setResult(123,intent);
+            finish();
+        });
     }
     public void back(View view) {
         finish();
