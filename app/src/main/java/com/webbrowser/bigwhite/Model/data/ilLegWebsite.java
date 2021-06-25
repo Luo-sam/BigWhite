@@ -1,5 +1,4 @@
 package com.webbrowser.bigwhite.Model.data;
-
 public class ilLegWebsite {
     public static  String[] illegWebsite(){
         String[] data=new String[3];

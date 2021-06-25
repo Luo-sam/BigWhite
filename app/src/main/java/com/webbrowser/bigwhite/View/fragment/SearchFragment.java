@@ -113,6 +113,15 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     //返回搜索栏
 
+
+    public LinearLayout getSearchHis() {
+        return searchHis;
+    }
+
+    public EditText getTextUrl() {
+        return textUrl;
+    }
+
     public LinearLayout getLiner_search() {
         return Liner_search;
     }
@@ -289,6 +298,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
                 }
             }
+
+
             super.onPageStarted(view,url,favicon);
             // 网页开始加载，显示进度条
             progressBar.setProgress(0);

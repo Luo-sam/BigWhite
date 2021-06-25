@@ -215,10 +215,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if(id == R.id.backLeft){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
-                sc.getIllegWebsite().setVisibility(View.GONE);
-                sc.getLiner_search().setVisibility(View.VISIBLE);
-                sc.getWeb().setVisibility(View.VISIBLE);
+                sc.getWebView().goBack();
             }
+            if(sc.getSearchHis().getVisibility()==View.VISIBLE){
+                sc.getSearchHis().setVisibility(View.GONE);
+                sc.getTextUrl().clearFocus();
+            }
+
             sc.getWebView().goBack();
         }else if(id == R.id.backRight){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
@@ -264,6 +267,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             sc.getIllegWebsite().setVisibility(View.GONE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
+        }
+        if(sc.getSearchHis().getVisibility()==View.VISIBLE){
+            sc.getSearchHis().setVisibility(View.GONE);
+            sc.getTextUrl().clearFocus();
         }
         if(sc.getWebView().canGoBack()){
             sc.getWebView().goBack();

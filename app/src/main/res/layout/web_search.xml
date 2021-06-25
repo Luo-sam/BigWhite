@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
 
-    <!--搜索框-->
+
 
     <LinearLayout
         android:id="@+id/illeg"
@@ -45,6 +45,7 @@
             android:textSize="34sp" />
     </LinearLayout>
 
+    <!--搜索框-->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
