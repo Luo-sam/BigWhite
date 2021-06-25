@@ -1,5 +1,6 @@
 package com.webbrowser.bigwhite.activity;
 
+import android.content.Intent;
 import android.icu.text.Transliterator;
 import android.os.Bundle;
 import android.util.Log;
@@ -73,11 +74,22 @@ public class bookmark extends AppCompatActivity {
         bookmarkList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String address = data.get(position).getAddress();
+                Intent intent = new Intent();
+                intent.putExtra("address",address);
+                bookmark.this.setResult(123,intent);
+                bookmark.this.finish();
+            }
+        });
+
+        bookmarkList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ActionSheetDialog dialog = new ActionSheetDialog(bookmark.this).builder().setTitle("请选择")
                         .addSheetItem("删除当前信息", null, new ActionSheetDialog.OnSheetItemClickListener() {
                             @Override
                             public void onClick(int which) {
-                                historyData hs = data.get(position);
+                                historyData hs = data.get(i);
                                 bookmark.clearThisMess(hs);
                                 initBookmarkArray();
                                 Log.d("clear", hs.getName());
@@ -92,6 +104,7 @@ public class bookmark extends AppCompatActivity {
                             }
                         });
                 dialog.show();
+                return true;
             }
         });
 
