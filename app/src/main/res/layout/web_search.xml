@@ -6,7 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical">
+
+
     <!--搜索框-->
+
+    <LinearLayout
+        android:id="@+id/illeg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/reject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            app:srcCompat="@drawable/reject" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="此网站为非法网站，禁止访问！"
+            android:textColor="@color/red"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/goback"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:text="返回"
+            android:textColor="@color/blue"
+            android:textSize="34sp" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -69,47 +107,50 @@
             android:max="100"
             android:progress="50" />
 
-        <WebView
+        <com.webbrowser.bigwhite.widget.MingWebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 
     <!--搜索历史-->
     <LinearLayout
+        android:id="@+id/search_his"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/search_his">
+        android:orientation="vertical">
+
         <LinearLayout
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="40dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/search_his_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/searchHis_title"/>
+                android:text="@string/searchHis_title" />
+
             <TextView
                 android:id="@+id/clear"
-                android:gravity="right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="right"
                 android:paddingEnd="10dp"
                 android:text="@string/clear"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
         </LinearLayout>
+
         <LinearLayout
-            android:background="@color/white"
             android:id="@+id/pop_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/white"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             tools:ignore="UselessParent">
