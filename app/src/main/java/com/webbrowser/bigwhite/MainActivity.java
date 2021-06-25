@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -302,6 +303,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             String url =  sc.getWebView().getUrl();
             bookmarkDao.addBookmark(new historyData(name,url),fileName);
             select_list.setVisibility(View.GONE);
+            showToast("添加成功");
         });
     }
 
@@ -320,18 +322,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             initFile();
         }else if(id == R.id.bookmark){
             myPopWin.dismiss();
-            startActivity(new Intent(MainActivity.this, bookmark.class));
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,bookmark.class);
+            startActivityForResult(intent,123);
         }else if(id == R.id.history){
             myPopWin.dismiss();
-            startActivity(new Intent(MainActivity.this, history.class));
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this,history.class);
+            startActivityForResult(intent,456);
         }else if(id == R.id.exit){
             Toast.makeText(mContext, "退出登录功能开发中", Toast.LENGTH_SHORT).show();
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == resultCode){
+            sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
+            sc.getWebView().loadUrl(data != null ? data.getExtras().getString("address") : "www.baidu.com");
+        }
+    }
 
     public void list_back(View view) {
         select_list.setVisibility(View.GONE);
+
     }
 
     private void initMultiWindowsView(){
