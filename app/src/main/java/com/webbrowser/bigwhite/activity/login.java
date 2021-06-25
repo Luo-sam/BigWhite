@@ -85,6 +85,7 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
                     final String responseHeader = response.header("Authorization");
 
                     runOnUiThread(() -> {
+                        Log.d("his", responseData);
                         if (responseHeader == null) {
                             showToast("账号密码错误");
                         }else{
