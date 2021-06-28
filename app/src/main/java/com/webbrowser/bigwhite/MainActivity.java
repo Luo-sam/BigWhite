@@ -252,6 +252,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             myAlertInputDialog.show();
         }else if(id == R.id.add_win){
             addWin();
+//            viewPager.setCurrentItem(fragments.size()-1);
         }
     }
 
@@ -433,7 +434,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
         layout.setVisibility(View.VISIBLE);
         viewPager.getAdapter().notifyDataSetChanged();
-        viewPager.setCurrentItem(currentItem);
+        viewPager.setCurrentItem(currentItem, false);
         enlargeWindow();
         //设置背景颜色为白色
         LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
