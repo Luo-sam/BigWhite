@@ -37,6 +37,7 @@ import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
 import com.webbrowser.bigwhite.View.fragment.SearchFragment;
 import com.webbrowser.bigwhite.View.viewpager.MyViewPager;
 import com.webbrowser.bigwhite.activity.BaseActivity;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.WebPageHelper;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import com.webbrowser.bigwhite.activity.bookmark;
@@ -228,6 +229,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             sc.getWebView().goForward();
         }else if(id == R.id.home){
+            CrawlPageUtil.currentNews = null;
             Intent intent=new Intent(this,MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);

@@ -32,6 +32,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.gson.Gson;
@@ -44,6 +46,7 @@ import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
 import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.R;
+import com.webbrowser.bigwhite.View.adapter.newsAdapter;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
 import com.webbrowser.bigwhite.activity.infoDetail;
 import com.webbrowser.bigwhite.activity.login;
@@ -89,7 +92,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private ImageView webIcon;
     private ImageView btnStart;
     private LinearLayout illegWebsite;
+
+    private LinearLayout linearLayout;
     private TextView textView;
+    private TextView title;
+    private TextView author;
 
     /*上传用的token*/
     private String token;
@@ -103,6 +110,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private static final String HTTPS = "https://";
 
     private Activity mActivity;
+    private LinearLayout advisory;
 
 
     //返回非法网站页面
@@ -142,6 +150,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
+
         view = inflater.inflate(R.layout.web_search, container, false);
         sc = new RecordsDao(mActivity);
         initView(view);
@@ -176,6 +186,9 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     /*初始化得到的view*/
     private void initView(View view) {
+        linearLayout=view.findViewById(R.id.linearLayout);
+        advisory=view.findViewById(R.id.advisory);
+        advisory.setVisibility(View.GONE);
         //mainActivity=(MainActivity)getActivity();
         illegWebsite = view.findViewById(R.id.illeg);
         illegWebsite.setVisibility(View.GONE);
@@ -186,6 +199,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         web = view.findViewById(R.id.web);
         searchHis = view.findViewById(R.id.search_his);
         searchHis.setVisibility(View.GONE);//隐藏
+        title=view.findViewById(R.id.title);
+        author=view.findViewById(R.id.author);
 
 
 
@@ -317,8 +332,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (view.getUrl().contains("https://www.baidu.com/#iact=wiseindex%")) {
-                Intent intent = new Intent();
-                intent.setClass(mActivity,infoDetail.class);
+//                Intent intent = new Intent();
+//                intent.setClass(mActivity,infoDetail.class);
                 String viewUrl = view.getUrl();
                 String pattern = "news_(\\d+)%";
 
@@ -333,7 +348,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                             id +
                             "%22%7D&pageType=1&n_type=1&p_from=-1&quot";
 
-                    intent.putExtra("url", viewUrl);
+                    //intent.putExtra("url", viewUrl);
                     if(!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
                         String html = null;
                         try {
@@ -349,7 +364,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(url);
 
 
-                    startActivityForResult(intent,123);
+                    //startActivityForResult(intent,123);
                 } else {
                     System.out.println("NO MATCH");
                 }
@@ -400,6 +415,23 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 //                    }
                 }
             }, 4000);
+            if(CrawlPageUtil.currentNews != null) {
+                title.setText(CrawlPageUtil.currentNews.getTitle());
+                author.setText(CrawlPageUtil.currentNews.getAuthor());
+                RecyclerView recyclerView=mActivity.findViewById(R.id.recyclerview);
+                LinearLayoutManager manager = new LinearLayoutManager(mActivity);
+                recyclerView.setLayoutManager(manager);
+                Log.d("MYURL", CrawlPageUtil.currentNews.getAddress());
+                newsAdapter newsAdapter = new newsAdapter(CrawlPageUtil.currentNews.getContents());
+                recyclerView.setAdapter(newsAdapter);
+                illegWebsite.setVisibility(View.GONE);
+                searchHis.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
+                web.setVisibility(View.GONE);
+                advisory.setVisibility(View.VISIBLE);
+
+            }
+
         }
     }
 
