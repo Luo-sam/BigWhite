@@ -39,6 +39,7 @@ import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
+import com.webbrowser.bigwhite.Model.data.NewsData;
 import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
 import com.webbrowser.bigwhite.Model.data.responseData_put;
@@ -46,6 +47,8 @@ import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
 import com.webbrowser.bigwhite.activity.infoDetail;
 import com.webbrowser.bigwhite.activity.login;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
+import com.webbrowser.bigwhite.utils.OkHttpUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.widget.MingWebView;
 
@@ -307,8 +310,43 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             if (view.getUrl().contains("https://www.baidu.com/#iact=wiseindex%")) {
                 Intent intent = new Intent();
                 intent.setClass(mActivity,infoDetail.class);
-                intent.putExtra("url",view.getUrl());
-                startActivityForResult(intent,123);
+                String viewUrl = view.getUrl();
+                String pattern = "news_(\\d+)%";
+
+                // 创建 Pattern 对象
+                Pattern r = Pattern.compile(pattern);
+
+                // 现在创建 matcher 对象
+                Matcher m = r.matcher(viewUrl);
+                if (m.find( )) {
+                    String id = m.group(1);
+                    viewUrl = "https://mbd.baidu.com/newspage/data/landingpage?s_type=news&dsp=wise&context=%7B%22nid%22%3A%22news_" +
+                            id +
+                            "%22%7D&pageType=1&n_type=1&p_from=-1&quot";
+
+                    intent.putExtra("url", viewUrl);
+                    if(!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
+                        String html = null;
+                        try {
+                            html = OkHttpUtil.OkGetArt(viewUrl);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        NewsData newsData = CrawlPageUtil.spiderNewsData(html, viewUrl);
+                        CrawlPageUtil.newsMap.put(viewUrl, newsData);
+                        CrawlPageUtil.currentNews = newsData;
+                    }
+                    else
+                        CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(url);
+
+
+                    startActivityForResult(intent,123);
+                } else {
+                    System.out.println("NO MATCH");
+                }
+
+
+
             }
             // 网页加载完毕，隐藏进度条
             progressBar.setVisibility(View.INVISIBLE);

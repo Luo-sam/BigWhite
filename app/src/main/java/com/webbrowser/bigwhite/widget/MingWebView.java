@@ -117,4 +117,6 @@ public class MingWebView extends WebView implements GestureDetector.OnGestureLis
     public interface OnScrollChangedCallback {
         void onScroll(int dx, int dy);
     }
+
+
 }
