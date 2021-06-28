@@ -26,7 +26,6 @@ public class CrawlPageUtil {
      * @return  ArrayList<NewsData> NewsDatas
      */
     public static NewsData spiderNewsData(String html, String url){
-        ArrayList<NewsData> NewsDatas = new ArrayList<>();
 
         Document document = Jsoup.parse(html);
         String NewsTitle = document.select("h1[class=titleSize]").text();
@@ -34,19 +33,38 @@ public class CrawlPageUtil {
 
         Element element = document
                 .select("div[class=mainContent]").get(0);
+        Elements div = element.select("div[class~=^content]");
 
-//        Log.i(TAG, "spiderNewsData: elements " +element.html());
-        Elements texts = element.select("div[class=contentText contentSize contentPadding]");
-        Elements medias = element.select("div[class=contentMedia]");
         List<String> textList = new ArrayList<>();
         List<String> imageList = new ArrayList<>();
-        for(Element element1: texts){
-            textList.add(element1.select("span").get(0).text());
+
+        for (Element element1 : div) {
+            try {
+                if(element1.attr("class").contains("contentMedia")){
+                    String s = element1.select("div").select("div[class~=^contentImg]").select("div")
+                            .select("img").attr("src");
+                    imageList.add(s);
+                    textList.add(s);
+                } else if(element1.attr("class").contains("contentText")){
+                    textList.add(element1.select("span").get(0).text());
+                }
+            } catch (Exception e) {
+                break;
+            }
+
         }
-        for(Element element1: medias){
-            imageList.add(element1.select("div").select("div[class~=^contentImg]").select("div")
-            .select("img").attr("src"));
-        }
+
+//        Log.i(TAG, "spiderNewsData: elements " +element.html());
+//        Elements texts = element.select("div[class~=^contentText contentSize]");
+//        Elements medias = element.select("div[class~=^contentMedia]");
+//
+//        for(Element element1: texts){
+//            textList.add(element1.select("span").get(0).text());
+//        }
+//        for(Element element1: medias){
+//            imageList.add(element1.select("div").select("div[class~=^contentImg]").select("div")
+//            .select("img").attr("src"));
+//        }
 
         return new NewsData(url, NewsTitle, author, textList, imageList);
     }

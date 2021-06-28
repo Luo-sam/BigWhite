@@ -150,8 +150,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
-
         view = inflater.inflate(R.layout.web_search, container, false);
         sc = new RecordsDao(mActivity);
         initView(view);
@@ -332,8 +330,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (view.getUrl().contains("https://www.baidu.com/#iact=wiseindex%")) {
-//                Intent intent = new Intent();
-//                intent.setClass(mActivity,infoDetail.class);
                 String viewUrl = view.getUrl();
                 String pattern = "news_(\\d+)%";
 
@@ -348,7 +344,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                             id +
                             "%22%7D&pageType=1&n_type=1&p_from=-1&quot";
 
-                    //intent.putExtra("url", viewUrl);
                     if(!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
                         String html = null;
                         try {
@@ -363,8 +358,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     else
                         CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(url);
 
-
-                    //startActivityForResult(intent,123);
                 } else {
                     System.out.println("NO MATCH");
                 }

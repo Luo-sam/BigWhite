@@ -62,9 +62,9 @@ public class OkHttpUtil {
                 .addHeader("User-Agent", userAgent)
                 .build();
 //            Response response = client.newCall(request).execute();
-            Call call = builder.build().newCall(request);
+        Call call = builder.build().newCall(request);
         CountDownLatch countDownLatch = new CountDownLatch(1);
-            call.enqueue(new Callback() {
+        call.enqueue(new Callback() {
                 /**
                  * 请求失败后执行
                  * @param call
