@@ -24,4 +24,5 @@
     <string name="startSearch">startSearch</string>
     <string name="bookmark_title">Bookmark</string>
     <string name="new_file">添加文件夹</string>
+    <string name="author">作者：</string>
 </resources>

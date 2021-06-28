@@ -7,8 +7,36 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+<!--咨询阅读板块 -->
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/author"/>
+        <TextView   
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/author"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerview">
 
+    </androidx.recyclerview.widget.RecyclerView>
 
+</LinearLayout>
 
     <LinearLayout
         android:id="@+id/illeg"

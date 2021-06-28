@@ -101,9 +101,18 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     private Activity mActivity;
 
+
     //返回非法网站页面
     public LinearLayout getIllegWebsite() {
         return illegWebsite;
+    }
+
+    public LinearLayout getSearchHis() {
+        return searchHis;
+    }
+
+    public EditText getTextUrl() {
+        return textUrl;
     }
 
     //返回webview
@@ -452,7 +461,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.goback) {
-            Toast.makeText(mActivity, "3666", Toast.LENGTH_SHORT).show();
             illegWebsite.setVisibility(View.GONE);
             Liner_search.setVisibility(View.VISIBLE);
             web.setVisibility(View.VISIBLE);
