@@ -46,10 +46,12 @@ public class CrawlPageUtil {
                     imageList.add(s);
                     textList.add(s);
                 } else if(element1.attr("class").contains("contentText")){
-                    textList.add(element1.select("span").get(0).text());
+                    if(element1.select("span") != null)
+                        textList.add(element1.select("span").get(0).text());
+                    else if(element1.select("p") != null)
+                        textList.add(element1.select("p").get(0).text());
                 }
-            } catch (Exception e) {
-                break;
+            } catch (Exception ignored) {
             }
 
         }
