@@ -216,6 +216,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         int id = v.getId();
         if(id == R.id.backLeft){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
+            if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+                sc.getLiner_search().setVisibility(View.VISIBLE);
+                sc.getWeb().setVisibility(View.VISIBLE);
+            }
             if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
                 sc.getWebView().goBack();
             }
@@ -267,6 +271,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onBackPressed(){
        //返回上一页
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
+        if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+            sc.getLiner_search().setVisibility(View.VISIBLE);
+            sc.getWeb().setVisibility(View.VISIBLE);
+        }
         if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
             sc.getIllegWebsite().setVisibility(View.GONE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
