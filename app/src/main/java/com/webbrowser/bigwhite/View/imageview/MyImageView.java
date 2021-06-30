@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -19,35 +22,57 @@ public class MyImageView extends androidx.appcompat.widget.AppCompatImageView {
     public static final int NETWORK_ERROR = 2;
     public static final int SERVER_ERROR = 3;
     //子线程不能操作UI，通过Handler设置图片
+
+    Context mContext;
+//    int width;
+//    int height;
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case GET_DATA_SUCCESS:
                     Bitmap bitmap = (Bitmap) msg.obj;
                     setImageBitmap(bitmap);
                     break;
                 case NETWORK_ERROR:
-                    Toast.makeText(getContext(),"网络连接失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "网络连接失败", Toast.LENGTH_SHORT).show();
                     break;
                 case SERVER_ERROR:
-                    Toast.makeText(getContext(),"服务器发生错误",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "服务器发生错误", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
     };
 
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+//        int wid = wm.getDefaultDisplay().getWidth();
+//        Drawable drawable = getDrawable();
+//        if(drawable!=null){
+//            if(width!=0){
+//                int hei = (int) wid * (height/width);
+//
+//                heightMeasureSpec = MeasureSpec.makeMeasureSpec(hei,MeasureSpec.EXACTLY);
+//            }
+//        }
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//    }
+
     public MyImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
     }
 
     public MyImageView(Context context) {
         super(context);
+        mContext = context;
     }
 
     public MyImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     //设置网络图片
@@ -71,6 +96,8 @@ public class MyImageView extends androidx.appcompat.widget.AppCompatImageView {
                         InputStream inputStream = connection.getInputStream();
                         //使用工厂把网络的输入流生产Bitmap
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//                        width = bitmap.getWidth();
+//                        height = bitmap.getHeight();
                         //利用Message把图片发给Handler
                         Message msg = Message.obtain();
                         msg.obj = bitmap;

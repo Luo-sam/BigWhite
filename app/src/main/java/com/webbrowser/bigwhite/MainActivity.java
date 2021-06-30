@@ -217,8 +217,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if(id == R.id.backLeft){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+                sc.getAdvisory().setVisibility(View.GONE);
                 sc.getLiner_search().setVisibility(View.VISIBLE);
                 sc.getWeb().setVisibility(View.VISIBLE);
+//                CrawlPageUtil.currentNews=null;
+                Log.d("imagesss", String.valueOf(CrawlPageUtil.currentNews));
             }
             if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
                 sc.getWebView().goBack();

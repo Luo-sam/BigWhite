@@ -3,6 +3,7 @@ package com.webbrowser.bigwhite.View.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -114,6 +115,10 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private Activity mActivity;
     private LinearLayout advisory;
 
+
+    public LinearLayout getAdvisory() {
+        return advisory;
+    }
 
     //返回非法网站页面
     public LinearLayout getIllegWebsite() {
@@ -340,7 +345,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
                 // 现在创建 matcher 对象
                 Matcher m = r.matcher(viewUrl);
-                if (m.find( )) {
+                if (m.find()) {
                     String id = m.group(1);
                     viewUrl = "https://mbd.baidu.com/newspage/data/landingpage?s_type=news&dsp=wise&context=%7B%22nid%22%3A%22news_" +
                             id +
@@ -431,7 +436,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 LinearLayoutManager manager = new LinearLayoutManager(mActivity);
                 recyclerView.setLayoutManager(manager);
                 Log.d("MYURL", CrawlPageUtil.currentNews.getAddress());
-                newsAdapter newsAdapter = new newsAdapter(CrawlPageUtil.currentNews.getContents());
+                newsAdapter newsAdapter = new newsAdapter(CrawlPageUtil.currentNews.getContents(),mActivity);
                 newsAdapter.setHasStableIds(true);
                 recyclerView.setAdapter(newsAdapter);
                 ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -442,7 +447,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 linearLayout.setVisibility(View.GONE);
                 web.setVisibility(View.GONE);
                 advisory.setVisibility(View.VISIBLE);
-
             }
 
         }
