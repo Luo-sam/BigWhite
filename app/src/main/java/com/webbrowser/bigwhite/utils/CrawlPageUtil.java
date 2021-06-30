@@ -3,6 +3,7 @@ package com.webbrowser.bigwhite.utils;
 import android.util.Log;
 
 import com.webbrowser.bigwhite.Model.data.NewsData;
+import com.webbrowser.bigwhite.Model.data.VideoData;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,8 +23,8 @@ public class CrawlPageUtil {
     public static NewsData currentNews;
     /*<url, NewsData>键值对*/
     public static Map<String, NewsData> newsMap = new HashMap<>();
-    /*当前视频url*/
-    public static String videoUrl;
+    /*当前视频*/
+    public static VideoData videoData;
     /**
      * 抓取图文
      * @param html，url
@@ -80,19 +81,37 @@ public class CrawlPageUtil {
      * @param html
      * @return  String
      */
-    public static String spiderVideoUrl(String html){
-        String pattern = "mainVideoList.*\"videoUrl\":\"(https:.*mp4)\"";
-
+    public static VideoData spiderVideoUrl(String html){
+        String url_pattern = "mainVideoList.*\"videoUrl\":\"(https:.*mp4)\"";
+        String title_pattern = "mainVideoList.*\"title\":\"(.*?)\"";
+        String author_pattern = "mainVideoList.*\"authorName\":\"(.*?)\"";
+        VideoData videoData = new VideoData("https://vd2.bdstatic.com/mda-mfdi9f9t3hjq1rx3/cae_h264/1623675468157378528/mda-mfdi9f9t3hjq1rx3.mp4",
+                "大白", "大白");
         // 创建 Pattern 对象
-        Pattern r = Pattern.compile(pattern);
+        Pattern r = Pattern.compile(url_pattern);
 
         // 现在创建 matcher 对象
         Matcher m = r.matcher(html);
         if(m.find()) {
             String s = m.group(1);
             s = s.replace("\\", "");
-            return s;
+            videoData.setVideoUrl(s);
         }
-        return "https://vd2.bdstatic.com/mda-mfdi9f9t3hjq1rx3/cae_h264/1623675468157378528/mda-mfdi9f9t3hjq1rx3.mp4";
+
+        r = Pattern.compile(title_pattern);
+        m = r.matcher(html);
+        if(m.find()) {
+            String s = m.group(1);
+            videoData.setTitle(s);
+        }
+
+        r = Pattern.compile(author_pattern);
+        m = r.matcher(html);
+        if(m.find()) {
+            String s = m.group(1);
+            videoData.setAuthor(s);
+        }
+
+        return videoData;
     }
 }

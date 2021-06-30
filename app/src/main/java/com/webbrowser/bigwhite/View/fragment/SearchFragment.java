@@ -354,7 +354,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                         NewsData newsData = CrawlPageUtil.spiderNewsData(html, viewUrl);
-                        CrawlPageUtil.newsMap.put(viewUrl, newsData);
+                        try {
+                            CrawlPageUtil.newsMap.put(viewUrl, (NewsData) newsData.clone());
+                        } catch (CloneNotSupportedException e) {
+                            e.printStackTrace();
+                        }
                         CrawlPageUtil.currentNews = newsData;
                     }
                     else
@@ -367,7 +371,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     try {
                         viewUrl = OkHttpUtil.getRealVideoUrl(viewUrl);
                         html = OkHttpUtil.OkGetArt(viewUrl);
-                        CrawlPageUtil.videoUrl = CrawlPageUtil.spiderVideoUrl(html);
+                        CrawlPageUtil.videoData = CrawlPageUtil.spiderVideoUrl(html);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
