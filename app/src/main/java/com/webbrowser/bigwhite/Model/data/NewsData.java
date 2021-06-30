@@ -13,13 +13,15 @@ public class NewsData {
     private List<String> contents;
     /*网页内容对应的图片，没有则为null*/
     private List<String> images;
+    private String videoUrl;
 
-    public NewsData(String address, String title, String author, List<String> contents, List<String> images) {
+    public NewsData(String address, String title, String author, List<String> contents, List<String> images, String videoUrl) {
         this.address = address;
         this.title = title;
         this.author = author;
         this.contents = contents;
         this.images = images;
+        this.videoUrl = videoUrl;
     }
 
     public String getAuthor() {
@@ -62,4 +64,11 @@ public class NewsData {
         this.images = images;
     }
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 }

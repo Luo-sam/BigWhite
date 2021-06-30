@@ -361,7 +361,17 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(url);
 
                 } else {
-                    System.out.println("NO MATCH");
+//                    System.out.println("NO MATCH");
+                    // 默认是视频
+                    String html = null;
+                    try {
+                        viewUrl = OkHttpUtil.getRealVideoUrl(viewUrl);
+                        html = OkHttpUtil.OkGetArt(viewUrl);
+                        CrawlPageUtil.videoUrl = CrawlPageUtil.spiderVideoUrl(html);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
 

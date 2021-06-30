@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CrawlPageUtil {
     private static final String TAG ="GetData" ;
@@ -20,10 +22,12 @@ public class CrawlPageUtil {
     public static NewsData currentNews;
     /*<url, NewsData>键值对*/
     public static Map<String, NewsData> newsMap = new HashMap<>();
+    /*当前视频url*/
+    public static String videoUrl;
     /**
-     * 抓取什么值得买首页的精选文章
-     * @param html
-     * @return  ArrayList<NewsData> NewsDatas
+     * 抓取图文
+     * @param html，url
+     * @return  NewsDatas
      */
     public static NewsData spiderNewsData(String html, String url){
 
@@ -68,6 +72,27 @@ public class CrawlPageUtil {
 //            .select("img").attr("src"));
 //        }
 
-        return new NewsData(url, NewsTitle, author, textList, imageList);
+        return new NewsData(url, NewsTitle, author, textList, imageList, null);
+    }
+
+    /**
+     * 抓取视频
+     * @param html
+     * @return  String
+     */
+    public static String spiderVideoUrl(String html){
+        String pattern = "mainVideoList.*\"videoUrl\":\"(https:.*mp4)\"";
+
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(html);
+        if(m.find()) {
+            String s = m.group(1);
+            s = s.replace("\\", "");
+            return s;
+        }
+        return "https://vd2.bdstatic.com/mda-mfdi9f9t3hjq1rx3/cae_h264/1623675468157378528/mda-mfdi9f9t3hjq1rx3.mp4";
     }
 }

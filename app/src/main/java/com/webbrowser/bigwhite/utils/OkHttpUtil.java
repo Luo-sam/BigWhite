@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -111,5 +113,21 @@ public class OkHttpUtil {
                         .getUserAgentString();
             }
         }
+    }
+    public static String getRealVideoUrl(String url){
+        String pattern = ".*(https%253A.*)%2526innerIframe.*";
+
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(url);
+        if(m.find()){
+            String s = m.group(1);
+            return s.replace("%252F", "/").replace("%2526", "&")
+                    .replace("%253D", "=").replace("%253F", "?")
+                    .replace("%253A", ":");
+        }
+        return "https://activity.baidu.com/mbox/4a81af9f65/wiseFeed?appname=baiduboxvision&channel_id=1024359a&invoke_id=1024374a&reqid=23456&channel=wisefeed&vid=17662619466131416370&is_invoke=1";
     }
 }
