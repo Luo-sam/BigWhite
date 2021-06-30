@@ -1,8 +1,11 @@
 package com.webbrowser.bigwhite.Model.data;
 
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class NewsData {
+public class NewsData implements Cloneable {
     /*网页的网址*/
     private String address;
     /*网页标题*/
@@ -14,6 +17,15 @@ public class NewsData {
     /*网页内容对应的图片，没有则为null*/
     private List<String> images;
     private String videoUrl;
+
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        NewsData newsData =  (NewsData) super.clone();
+        newsData.setContents(new ArrayList<>(contents));
+        newsData.setImages(new ArrayList<>(images));
+        return newsData;
+    }
 
     public NewsData(String address, String title, String author, List<String> contents, List<String> images, String videoUrl) {
         this.address = address;

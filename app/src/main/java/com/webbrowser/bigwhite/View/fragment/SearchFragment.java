@@ -358,7 +358,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         CrawlPageUtil.currentNews = newsData;
                     }
                     else
-                        CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(url);
+                        CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(viewUrl);
 
                 } else {
 //                    System.out.println("NO MATCH");
