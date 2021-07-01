@@ -100,6 +100,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private TextView textView;
     private TextView title;
     private TextView author;
+    private TextView video;
 
     /*上传用的token*/
     private String token;
@@ -191,8 +192,9 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     /*初始化得到的view*/
     private void initView(View view) {
-        linearLayout=view.findViewById(R.id.linearLayout);
-        advisory=view.findViewById(R.id.advisory);
+        video = view.findViewById(R.id.video);
+        linearLayout = view.findViewById(R.id.linearLayout);
+        advisory = view.findViewById(R.id.advisory);
         advisory.setVisibility(View.GONE);
         //mainActivity=(MainActivity)getActivity();
         illegWebsite = view.findViewById(R.id.illeg);
@@ -204,8 +206,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         web = view.findViewById(R.id.web);
         searchHis = view.findViewById(R.id.search_his);
         searchHis.setVisibility(View.GONE);//隐藏
-        title=view.findViewById(R.id.title);
-        author=view.findViewById(R.id.author);
+        title = view.findViewById(R.id.title);
+        author = view.findViewById(R.id.author);
 
 
 
@@ -351,7 +353,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                             id +
                             "%22%7D&pageType=1&n_type=1&p_from=-1&quot";
 
-                    if(!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
+                    if (!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
                         String html = null;
                         try {
                             html = OkHttpUtil.OkGetArt(viewUrl);
@@ -365,8 +367,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                         CrawlPageUtil.currentNews = newsData;
-                    }
-                    else
+                    } else
                         CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(viewUrl);
 
                 } else {
@@ -382,7 +383,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     }
 
                 }
-
 
 
             }
@@ -429,28 +429,57 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 //                    }
                 }
             }, 4000);
-            if(CrawlPageUtil.currentNews != null) {
-                title.setText(CrawlPageUtil.currentNews.getTitle());
-                author.setText(CrawlPageUtil.currentNews.getAuthor());
-                RecyclerView recyclerView=mActivity.findViewById(R.id.recyclerview);
-                LinearLayoutManager manager = new LinearLayoutManager(mActivity);
-                recyclerView.setLayoutManager(manager);
-                Log.d("MYURL", CrawlPageUtil.currentNews.getAddress());
-                newsAdapter newsAdapter = new newsAdapter(CrawlPageUtil.currentNews.getContents(),mActivity);
-                newsAdapter.setHasStableIds(true);
-                recyclerView.setAdapter(newsAdapter);
-                ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-                recyclerView.setOnScrollListener(new OnRcvScrollListener());
-                recyclerView.setItemViewCacheSize(30);
-                illegWebsite.setVisibility(View.GONE);
-                searchHis.setVisibility(View.GONE);
-                linearLayout.setVisibility(View.GONE);
-                web.setVisibility(View.GONE);
-                advisory.setVisibility(View.VISIBLE);
-            }
+//            if(CrawlPageUtil.currentNews==null&&CrawlPageUtil.videoUrl!=null){
+//
+//            }
 
+            NewsData news =  CrawlPageUtil.currentNews;
+            String videa = CrawlPageUtil.videoUrl;
+            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
+            newsAdapter newsAdapter = null;
+            if (news != null ||videa != null ) {
+                if (news != null) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    video.setVisibility(View.GONE);
+                    title.setText(news.getTitle());
+                    author.setText(news.getAuthor());
+                    LinearLayoutManager manager = new LinearLayoutManager(mActivity);
+                    recyclerView.setLayoutManager(manager);
+                    Log.d("MYURL", news.getAddress());
+                    newsAdapter = new newsAdapter(news.getContents(), mActivity);
+                    newsAdapter.setHasStableIds(true);
+                    recyclerView.setAdapter(newsAdapter);
+                    ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+                    recyclerView.setOnScrollListener(new OnRcvScrollListener());
+                    recyclerView.setItemViewCacheSize(30);
+                    illegWebsite.setVisibility(View.GONE);
+                    searchHis.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                    web.setVisibility(View.GONE);
+                    advisory.setVisibility(View.VISIBLE);
+                }
+                if ( videa != null) {
+                    if (recyclerView.getAdapter()!= null) {
+//                        newsAdapter.updateData(null);
+//                        recyclerView.setAdapter(newsAdapter);
+                        recyclerView.setVisibility(View.GONE);
+                        video.setVisibility(View.VISIBLE);
+                    }
+                    video.setText(videa);
+                    illegWebsite.setVisibility(View.GONE);
+                    searchHis.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                    web.setVisibility(View.GONE);
+                    advisory.setVisibility(View.VISIBLE);
+                }
+
+            }
+            CrawlPageUtil.currentNews = null;
+            CrawlPageUtil.videoUrl = null;
         }
+
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -459,6 +488,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             webView.goBack();
         }
     }
+
     private class MkWebChromeClient extends WebChromeClient {
         private final static int WEB_PROGRESS_MAX = 100;
 

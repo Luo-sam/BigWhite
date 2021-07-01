@@ -38,6 +38,11 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
     View view;
     Context mContext;
 
+    public void updateData(List<String> mData) {
+        this.data = mData;
+        notifyDataSetChanged();
+    }
+
     static class ViewHoder extends RecyclerView.ViewHolder {
         TextView author;
         TextView title;
