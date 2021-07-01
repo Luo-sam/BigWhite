@@ -44,6 +44,7 @@ import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.NewsData;
+import com.webbrowser.bigwhite.Model.data.VideoData;
 import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
 import com.webbrowser.bigwhite.Model.data.responseData_put;
@@ -434,7 +435,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 //            }
 
             NewsData news =  CrawlPageUtil.currentNews;
-            String videa = CrawlPageUtil.videoUrl;
+            VideoData videa = CrawlPageUtil.videoData;
             RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
             newsAdapter newsAdapter = null;
             if (news != null ||videa != null ) {
@@ -465,7 +466,9 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         recyclerView.setVisibility(View.GONE);
                         video.setVisibility(View.VISIBLE);
                     }
-                    video.setText(videa);
+                    title.setText(CrawlPageUtil.videoData.getTitle());
+                    author.setText(CrawlPageUtil.videoData.getAuthor());
+                    video.setText(CrawlPageUtil.videoData.getVideoUrl());
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);
@@ -475,7 +478,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
             }
             CrawlPageUtil.currentNews = null;
-            CrawlPageUtil.videoUrl = null;
+            CrawlPageUtil.videoData = null;
         }
 
     }
