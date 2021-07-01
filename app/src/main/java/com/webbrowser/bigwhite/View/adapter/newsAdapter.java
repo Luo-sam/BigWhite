@@ -1,8 +1,6 @@
 package com.webbrowser.bigwhite.View.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -12,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,16 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.imageview.MyImageView;
-import com.webbrowser.bigwhite.utils.CrawlPageUtil;
-import com.webbrowser.bigwhite.utils.WebPageHelper;
+import com.webbrowser.bigwhite.utils.picDialog;
 import com.webbrowser.bigwhite.utils.url_image.URLImageParser;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
     private List<String> data;
@@ -48,6 +38,8 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
         TextView title;
         TextView textView1;
         MyImageView imageView;
+
+
 
         //        TextView textView2;
         public ViewHoder(@NonNull View itemView) {
@@ -83,6 +75,10 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
             Log.d("pic", s);
             holder.imageView.setImageURL(s);
 
+            picDialog picDialog = new picDialog(mContext);
+            picDialog.addDialog(holder.imageView);
+            picDialog.dismissDia();
+            picDialog.save(holder.imageView);
             int wid = holder.imageView.getWidth();
             int hei = holder.imageView.getHeight();
             Log.d("wid", String.valueOf(wid));

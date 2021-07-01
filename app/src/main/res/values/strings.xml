@@ -25,4 +25,5 @@
     <string name="bookmark_title">Bookmark</string>
     <string name="new_file">添加文件夹</string>
     <string name="author">来源：</string>
+    <string name="dismiss">取消</string>
 </resources>
