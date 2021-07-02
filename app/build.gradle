@@ -43,5 +43,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     implementation 'com.github.HanHuoBin:BaseDialog:1.2.0'
+    // jsoup HTML parser library @ https://jsoup.org/
+    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 }

@@ -3,6 +3,7 @@ package com.webbrowser.bigwhite.View.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -32,6 +33,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.gson.Gson;
@@ -39,13 +43,19 @@ import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
+import com.webbrowser.bigwhite.Model.data.NewsData;
+import com.webbrowser.bigwhite.Model.data.VideoData;
 import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
 import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.R;
+import com.webbrowser.bigwhite.View.action.OnRcvScrollListener;
+import com.webbrowser.bigwhite.View.adapter.newsAdapter;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
 import com.webbrowser.bigwhite.activity.infoDetail;
 import com.webbrowser.bigwhite.activity.login;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
+import com.webbrowser.bigwhite.utils.OkHttpUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.widget.MingWebView;
 
@@ -86,7 +96,12 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private ImageView webIcon;
     private ImageView btnStart;
     private LinearLayout illegWebsite;
+
+    private LinearLayout linearLayout;
     private TextView textView;
+    private TextView title;
+    private TextView author;
+    private TextView video;
 
     /*上传用的token*/
     private String token;
@@ -100,10 +115,24 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private static final String HTTPS = "https://";
 
     private Activity mActivity;
+    private LinearLayout advisory;
+
+
+    public LinearLayout getAdvisory() {
+        return advisory;
+    }
 
     //返回非法网站页面
     public LinearLayout getIllegWebsite() {
         return illegWebsite;
+    }
+
+    public LinearLayout getSearchHis() {
+        return searchHis;
+    }
+
+    public EditText getTextUrl() {
+        return textUrl;
     }
 
     //返回webview
@@ -164,6 +193,10 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 
     /*初始化得到的view*/
     private void initView(View view) {
+        video = view.findViewById(R.id.video);
+        linearLayout = view.findViewById(R.id.linearLayout);
+        advisory = view.findViewById(R.id.advisory);
+        advisory.setVisibility(View.GONE);
         //mainActivity=(MainActivity)getActivity();
         illegWebsite = view.findViewById(R.id.illeg);
         illegWebsite.setVisibility(View.GONE);
@@ -174,6 +207,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         web = view.findViewById(R.id.web);
         searchHis = view.findViewById(R.id.search_his);
         searchHis.setVisibility(View.GONE);//隐藏
+        title = view.findViewById(R.id.title);
+        author = view.findViewById(R.id.author);
 
 
 
@@ -305,10 +340,52 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             if (view.getUrl().contains("https://www.baidu.com/#iact=wiseindex%")) {
-                Intent intent = new Intent();
-                intent.setClass(mActivity,infoDetail.class);
-                intent.putExtra("url",view.getUrl());
-                startActivityForResult(intent,123);
+                String viewUrl = view.getUrl();
+                String pattern = "news_(\\d+)%";
+
+                // 创建 Pattern 对象
+                Pattern r = Pattern.compile(pattern);
+
+                // 现在创建 matcher 对象
+                Matcher m = r.matcher(viewUrl);
+                if (m.find()) {
+                    String id = m.group(1);
+                    viewUrl = "https://mbd.baidu.com/newspage/data/landingpage?s_type=news&dsp=wise&context=%7B%22nid%22%3A%22news_" +
+                            id +
+                            "%22%7D&pageType=1&n_type=1&p_from=-1&quot";
+
+                    if (!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
+                        String html = null;
+                        try {
+                            html = OkHttpUtil.OkGetArt(viewUrl);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        NewsData newsData = CrawlPageUtil.spiderNewsData(html, viewUrl);
+                        try {
+                            CrawlPageUtil.newsMap.put(viewUrl, (NewsData) newsData.clone());
+                        } catch (CloneNotSupportedException e) {
+                            e.printStackTrace();
+                        }
+                        CrawlPageUtil.currentNews = newsData;
+                    } else
+                        CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(viewUrl);
+
+                } else {
+//                    System.out.println("NO MATCH");
+                    // 默认是视频
+                    String html = null;
+                    try {
+                        viewUrl = OkHttpUtil.getRealVideoUrl(viewUrl);
+                        html = OkHttpUtil.OkGetArt(viewUrl);
+                        CrawlPageUtil.videoData = CrawlPageUtil.spiderVideoUrl(html);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
             }
             // 网页加载完毕，隐藏进度条
             progressBar.setVisibility(View.INVISIBLE);
@@ -353,8 +430,59 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 //                    }
                 }
             }, 4000);
+//            if(CrawlPageUtil.currentNews==null&&CrawlPageUtil.videoUrl!=null){
+//
+//            }
+
+            NewsData news =  CrawlPageUtil.currentNews;
+            VideoData videa = CrawlPageUtil.videoData;
+            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
+            newsAdapter newsAdapter = null;
+            if (news != null ||videa != null ) {
+                if (news != null) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    video.setVisibility(View.GONE);
+                    title.setText(news.getTitle());
+                    author.setText(news.getAuthor());
+                    LinearLayoutManager manager = new LinearLayoutManager(mActivity);
+                    recyclerView.setLayoutManager(manager);
+                    Log.d("MYURL", news.getAddress());
+                    newsAdapter = new newsAdapter(news.getContents(), mActivity);
+                    newsAdapter.setHasStableIds(true);
+                    recyclerView.setAdapter(newsAdapter);
+                    ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+                    recyclerView.setOnScrollListener(new OnRcvScrollListener());
+                    recyclerView.setItemViewCacheSize(30);
+                    illegWebsite.setVisibility(View.GONE);
+                    searchHis.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                    web.setVisibility(View.GONE);
+                    advisory.setVisibility(View.VISIBLE);
+                }
+                if ( videa != null) {
+                    if (recyclerView.getAdapter()!= null) {
+//                        newsAdapter.updateData(null);
+//                        recyclerView.setAdapter(newsAdapter);
+                        recyclerView.setVisibility(View.GONE);
+                        video.setVisibility(View.VISIBLE);
+                    }
+                    title.setText(CrawlPageUtil.videoData.getTitle());
+                    author.setText(CrawlPageUtil.videoData.getAuthor());
+                    video.setText(CrawlPageUtil.videoData.getVideoUrl());
+                    illegWebsite.setVisibility(View.GONE);
+                    searchHis.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                    web.setVisibility(View.GONE);
+                    advisory.setVisibility(View.VISIBLE);
+                }
+
+            }
+            CrawlPageUtil.currentNews = null;
+            CrawlPageUtil.videoData = null;
         }
+
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -363,6 +491,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             webView.goBack();
         }
     }
+
     private class MkWebChromeClient extends WebChromeClient {
         private final static int WEB_PROGRESS_MAX = 100;
 
@@ -452,7 +581,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.goback) {
-            Toast.makeText(mActivity, "3666", Toast.LENGTH_SHORT).show();
             illegWebsite.setVisibility(View.GONE);
             Liner_search.setVisibility(View.VISIBLE);
             web.setVisibility(View.VISIBLE);

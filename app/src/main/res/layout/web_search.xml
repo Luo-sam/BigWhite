@@ -7,8 +7,46 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+<!--咨询阅读板块 -->
+<LinearLayout
+    android:id="@+id/advisory"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:lines="2"
+        android:id="@+id/title"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/author"/>
+        <TextView   
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/author"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:id="@+id/video"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerview">
 
-    <!--搜索框-->
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
 
     <LinearLayout
         android:id="@+id/illeg"
@@ -45,7 +83,9 @@
             android:textSize="34sp" />
     </LinearLayout>
 
+    <!--搜索框-->
     <LinearLayout
+
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"

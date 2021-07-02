@@ -37,6 +37,7 @@ import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
 import com.webbrowser.bigwhite.View.fragment.SearchFragment;
 import com.webbrowser.bigwhite.View.viewpager.MyViewPager;
 import com.webbrowser.bigwhite.activity.BaseActivity;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.WebPageHelper;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import com.webbrowser.bigwhite.activity.bookmark;
@@ -215,16 +216,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         int id = v.getId();
         if(id == R.id.backLeft){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
-            if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
-                sc.getIllegWebsite().setVisibility(View.GONE);
+            if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+                sc.getAdvisory().setVisibility(View.GONE);
                 sc.getLiner_search().setVisibility(View.VISIBLE);
                 sc.getWeb().setVisibility(View.VISIBLE);
+//                CrawlPageUtil.currentNews=null;
+                Log.d("imagesss", String.valueOf(CrawlPageUtil.currentNews));
             }
+            if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
+                sc.getWebView().goBack();
+            }
+            if(sc.getSearchHis().getVisibility()==View.VISIBLE){
+                sc.getSearchHis().setVisibility(View.GONE);
+                sc.getTextUrl().clearFocus();
+            }
+
             sc.getWebView().goBack();
         }else if(id == R.id.backRight){
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             sc.getWebView().goForward();
         }else if(id == R.id.home){
+            CrawlPageUtil.currentNews = null;
             Intent intent=new Intent(this,MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -249,6 +261,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             myAlertInputDialog.show();
         }else if(id == R.id.add_win){
             addWin();
+//            viewPager.setCurrentItem(fragments.size()-1);
         }
     }
 
@@ -261,10 +274,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onBackPressed(){
        //返回上一页
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
+        if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+            sc.getLiner_search().setVisibility(View.VISIBLE);
+            sc.getWeb().setVisibility(View.VISIBLE);
+        }
         if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
             sc.getIllegWebsite().setVisibility(View.GONE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
+        }
+        if(sc.getSearchHis().getVisibility()==View.VISIBLE){
+            sc.getSearchHis().setVisibility(View.GONE);
+            sc.getTextUrl().clearFocus();
         }
         if(sc.getWebView().canGoBack()){
             sc.getWebView().goBack();
@@ -426,7 +447,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
         layout.setVisibility(View.VISIBLE);
         viewPager.getAdapter().notifyDataSetChanged();
-        viewPager.setCurrentItem(currentItem);
+        viewPager.setCurrentItem(currentItem, false);
         enlargeWindow();
         //设置背景颜色为白色
         LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
