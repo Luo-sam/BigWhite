@@ -29,10 +29,24 @@ public class httpUtils {
                 .build();
         client.newCall(request).enqueue(callback);
     }
+    //验证
+    public static void verifyWithOkHttp(String address,String email,okhttp3.Callback callback){
+        OkHttpClient client = new OkHttpClient();
+//        RequestBody body = new FormBody.Builder()
+//                .add("email",email)
+//                .build();
+        Request request = new Request.Builder()
+                .url(address)
+                .build();
+
+        client.newCall(request).enqueue(callback);
+    }
     //注册
-    public static void registerWithOkHttp(String address,String account,String password,okhttp3.Callback callback){
+    public static void registerWithOkHttp(String address,String email,String verify,String account,String password,okhttp3.Callback callback){
         OkHttpClient client = new OkHttpClient();
         RequestBody body = new FormBody.Builder()
+                .add("email",email)
+                .add("verifyCode",verify)
                 .add("username",account)
                 .add("password",password)
                 .build();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -36,5 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("sp_list",MODE_PRIVATE);
         return sp.getString(key,"");
     }
+
+    public abstract void onClick(View v);
 }
 
