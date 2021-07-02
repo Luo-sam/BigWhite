@@ -3,7 +3,6 @@ package com.webbrowser.bigwhite.View.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,46 +31,29 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
-import com.google.gson.Gson;
-import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
-import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.NewsData;
 import com.webbrowser.bigwhite.Model.data.VideoData;
 import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
-import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.action.OnRcvScrollListener;
 import com.webbrowser.bigwhite.View.adapter.newsAdapter;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
-import com.webbrowser.bigwhite.activity.infoDetail;
-import com.webbrowser.bigwhite.activity.login;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.OkHttpUtil;
-import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.widget.MingWebView;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import cn.hutool.http.HttpUtil;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -135,7 +116,7 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         return textUrl;
     }
 
-    //返回webview
+    //返回webView
     public FrameLayout getWeb() {
         return web;
     }
@@ -372,7 +353,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                         CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(viewUrl);
 
                 } else {
-//                    System.out.println("NO MATCH");
                     // 默认是视频
                     String html = null;
                     try {
@@ -430,9 +410,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
 //                    }
                 }
             }, 4000);
-//            if(CrawlPageUtil.currentNews==null&&CrawlPageUtil.videoUrl!=null){
-//
-//            }
 
             NewsData news =  CrawlPageUtil.currentNews;
             VideoData videa = CrawlPageUtil.videoData;
@@ -445,12 +422,17 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                     title.setText(news.getTitle());
                     author.setText(news.getAuthor());
                     LinearLayoutManager manager = new LinearLayoutManager(mActivity);
+                    manager.setOrientation(LinearLayoutManager.VERTICAL);
+
                     recyclerView.setLayoutManager(manager);
-                    Log.d("MYURL", news.getAddress());
                     newsAdapter = new newsAdapter(news.getContents(), mActivity);
+                    /*避免数据改变的时候重新加载*/
                     newsAdapter.setHasStableIds(true);
                     recyclerView.setAdapter(newsAdapter);
-                    ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+                    /*避免闪烁*/
+//                    ((DefaultItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+                    recyclerView.setItemAnimator(null);
+                    /*设置动态更新recyclerView*/
                     recyclerView.setOnScrollListener(new OnRcvScrollListener());
                     recyclerView.setItemViewCacheSize(30);
                     illegWebsite.setVisibility(View.GONE);
@@ -461,8 +443,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
                 }
                 if ( videa != null) {
                     if (recyclerView.getAdapter()!= null) {
-//                        newsAdapter.updateData(null);
-//                        recyclerView.setAdapter(newsAdapter);
                         recyclerView.setVisibility(View.GONE);
                         video.setVisibility(View.VISIBLE);
                     }
@@ -641,9 +621,5 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
             clearSure.setMessage("您确认清空搜索历史吗");
             clearSure.show();
         }
-    }
-
-    public void setWebView(MingWebView webView) {
-        this.webView = webView;
     }
 }

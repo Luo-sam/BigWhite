@@ -1,10 +1,10 @@
 package com.webbrowser.bigwhite.View.action;
 
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import java.util.Objects;
 
 /**
  * @author Jack Tony
@@ -13,18 +13,16 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  */
 public class OnRcvScrollListener extends RecyclerView.OnScrollListener{
 
-    private String TAG = getClass().getSimpleName();
 
     @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
     }
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//        super.onScrollStateChanged(recyclerView, newState);
         if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-            recyclerView.getAdapter().notifyDataSetChanged();
+            Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
 
     }

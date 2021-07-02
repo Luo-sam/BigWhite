@@ -18,21 +18,29 @@
         android:hardwareAccelerated="true"
         tools:targetApi="p"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.splash">
+        <activity android:name=".activity.splash" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".activity.history"/>
-        <activity android:name=".activity.bookmark"/>
-        <activity android:name=".activity.login"/>
-        <activity android:name=".activity.multiwindows"/>
-        <activity android:name=".activity.register"/>
-        <activity android:name=".activity.chooseLoginRegister"/>
-        <activity android:name=".activity.infoDetail"/>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.history" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.bookmark" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.login" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.multiwindows" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.register" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.chooseLoginRegister" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.infoDetail" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
     </application>
 

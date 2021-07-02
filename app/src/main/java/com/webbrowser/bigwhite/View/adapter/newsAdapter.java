@@ -1,15 +1,14 @@
 package com.webbrowser.bigwhite.View.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,35 +21,12 @@ import com.webbrowser.bigwhite.utils.url_image.URLImageParser;
 
 import java.util.List;
 
-public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
+public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHolder> {
     private List<String> data;
     boolean[] flags;
     View view;
     Context mContext;
 
-    public void updateData(List<String> mData) {
-        this.data = mData;
-        notifyDataSetChanged();
-    }
-
-    static class ViewHoder extends RecyclerView.ViewHolder {
-        TextView author;
-        TextView title;
-        TextView textView1;
-        MyImageView imageView;
-
-
-
-        //        TextView textView2;
-        public ViewHoder(@NonNull View itemView) {
-            super(itemView);
-            author = itemView.findViewById(R.id.author);
-            textView1 = itemView.findViewById(R.id.content);
-//            textView2=itemView.findViewById(R.id.imageUrl);
-            title = itemView.findViewById(R.id.title);
-            imageView = itemView.findViewById(R.id.imageUrl);
-        }
-    }
 
     public newsAdapter(List<String> data, Context context) {
         this.data = data;
@@ -58,51 +34,56 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
         mContext = context;
     }
 
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView author;
+        TextView title;
+        TextView textView1;
+        MyImageView imageView;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            author = itemView.findViewById(R.id.author);
+            textView1 = itemView.findViewById(R.id.content);
+            title = itemView.findViewById(R.id.title);
+            imageView = itemView.findViewById(R.id.imageUrl);
+        }
+    }
+
     @NonNull
     @Override
-    public ViewHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_advisory, parent, false);
-        ViewHoder holder = new ViewHoder(view);
-
-
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHoder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String s = data.get(position);
         if (s.startsWith("https://f") || s.startsWith("https://p")) {
-            Log.d("pic", s);
             holder.imageView.setImageURL(s);
+            Bitmap bitmap = holder.imageView.getMyBitmap();
+            holder.imageView.setImageBitmap(bitmap);
+//            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+//            int width = wm.getDefaultDisplay().getWidth();
+//            if (bitmap.getWidth() != 0) {
+//                int height = (int) width * (bitmap.getHeight() / bitmap.getWidth());
+//                holder.imageView.setMaxWidth(width);
+//                holder.imageView.setMaxHeight(height);
+//            }
 
+            /**
+             *@Author luo
+             *@Time 2021/7/1 10:38
+             *@Description 设置图片编辑器
+             */
             picDialog picDialog = new picDialog(mContext);
             picDialog.addDialog(holder.imageView);
             picDialog.dismissDia();
             picDialog.save(holder.imageView);
-            int wid = holder.imageView.getWidth();
-            int hei = holder.imageView.getHeight();
-            Log.d("wid", String.valueOf(wid));
-
-            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            int width = wm.getDefaultDisplay().getWidth();
-
-            if (wid != 0) {
-                int height = (int) width * (hei / wid);
-                Log.d("height1", String.valueOf(height));
-                holder.imageView.setMaxHeight(height);
-                //holder.imageView.setMaxWidth(width);
-                Log.d("width1", String.valueOf(width));
-
-            }
-//        int wid = wm.getDefaultDisplay().getWidth();
-            holder.textView1.setVisibility(View.GONE);
-            //setRichText(holder, WebPageHelper.webpagelist.get(0).getActivity().getBaseContext(), s);
         } else {
             holder.textView1.setText(s);
             holder.imageView.setVisibility(View.GONE);
-            //setRichText(holder, WebPageHelper.webpagelist.get(0).getActivity().getBaseContext(), s);
         }
-        //holder.textView2.setText(data.get(position));
     }
 
     @Override
@@ -111,7 +92,7 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
     }
 
     @Override
-    public void onViewRecycled(@NonNull ViewHoder holder) {
+    public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
     }
 
@@ -120,8 +101,8 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHoder> {
         return position;
     }
 
-    private void setRichText(ViewHoder hoder, Context context, String text) {
-        TextView textView = hoder.textView1;
+    private void setRichText(ViewHolder holder, Context context, String text) {
+        TextView textView = holder.textView1;
         float imageSize = 10 * 15;
         //图文混排的text，这里用"[]"标示图片
 //        String text = textView.getText().toString();
