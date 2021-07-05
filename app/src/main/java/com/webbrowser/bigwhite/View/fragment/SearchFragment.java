@@ -87,6 +87,8 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
 
     private Activity mActivity;
     private LinearLayout advisory;
+    private RecyclerView recyclerView;
+
 
 
     @Nullable
@@ -136,6 +138,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         searchHis = view.findViewById(R.id.search_his);
         title = view.findViewById(R.id.title);
         author = view.findViewById(R.id.author);
+        recyclerView = view.findViewById(R.id.recyclerview);
 
 
         history = new historyDao(mActivity);
@@ -326,7 +329,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
              */
             NewsData news = CrawlPageUtil.currentNews;
             VideoData videa = CrawlPageUtil.videoData;
-            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
+//            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
             newsAdapter newsAdapter = null;
             if (news != null || videa != null) {
                 if (news != null) {
@@ -346,7 +349,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                     recyclerView.setItemAnimator(null);
                     /*设置动态更新recyclerView*/
                     recyclerView.setOnScrollListener(new OnRcvScrollListener());
-                    recyclerView.setItemViewCacheSize(30);
+                    recyclerView.setItemViewCacheSize(50);
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);
