@@ -48,6 +48,7 @@ import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import com.webbrowser.bigwhite.activity.personalCenterActivity;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 //import com.webbrowser.bigwhite.utils.WebPageHelper;
+
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,6 +88,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     /*主页初始layoutParams*/
     ViewGroup.LayoutParams mylayoutParams;
+
+    public LinearLayout getWindows() {
+        return windows;
+    }
 
     /*onCreate方法*/
     @Override
@@ -247,6 +252,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //返回上一页
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
         if (sc.getAdvisory().getVisibility() == View.VISIBLE) {
+            windows.setVisibility(View.VISIBLE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
         }
@@ -342,7 +348,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (id == R.id.exit) {
             saveToSp("token", "");
             myPopWin.change();
-        }else if(id==R.id.person){
+        }else if(id==R.id.personal){
             startActivity(new Intent(MainActivity.this, personalCenterActivity.class));
         }
     };
@@ -497,7 +503,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         viewPager.setClipChildren(true);
         viewPager.setFullScreen(true);
     }
-    public LinearLayout getWindows() {
-        return windows;
-    }
+
 }

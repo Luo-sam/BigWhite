@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.OkHttpUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.utils.method.OnRcvScrollListener;
+import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
