@@ -1,5 +1,6 @@
 package com.webbrowser.bigwhite.Model.SQLite;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -43,21 +44,41 @@ public class historyDao {
             }
         }
     }
+
+    //判断是否含有该搜索记录
+    public boolean isHasRecord(historyData historyData) {
+        boolean isHasRecord = false;
+        SQLiteDatabase db = historyHelper.getWritableDatabase();
+        Cursor cursor = db.query("myhistory", null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            if (historyData.getAddress().equals(cursor.getString
+                    (cursor.getColumnIndexOrThrow("Address")))) {
+                isHasRecord = true;
+            }
+        }
+        //关闭数据库
+        db.close();
+        cursor.close();
+        return isHasRecord;
+    }
+
     /*添加记录*/
     public void addHistory(historyData historyData){
-        SQLiteDatabase db = null;
-        try{
-            db = historyHelper.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("Name",historyData.getName());
-            contentValues.put("Address",historyData.getAddress());
-            db.insertOrThrow(historyHelper.TABLE_NAME_HISTORY,null,contentValues);
-        }catch (Exception e){
-            Log.e(TAG, "add error", e);
-        }finally {
-            if(db!=null&&db.inTransaction()){
-                db.endTransaction();
-                db.close();
+        if(!historyData.getName().equals("百度一下")){
+            SQLiteDatabase db = null;
+            try{
+                db = historyHelper.getWritableDatabase();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("Name",historyData.getName());
+                contentValues.put("Address",historyData.getAddress());
+                db.insertOrThrow(historyHelper.TABLE_NAME_HISTORY,null,contentValues);
+            }catch (Exception e){
+                Log.e(TAG, "add error", e);
+            }finally {
+                if(db!=null&&db.inTransaction()){
+                    db.endTransaction();
+                    db.close();
+                }
             }
         }
     }
@@ -65,7 +86,7 @@ public class historyDao {
     public List<historyData> queryHistory(){
         SQLiteDatabase db = historyHelper.getWritableDatabase();
         List<historyData> list = new ArrayList<>();
-        Cursor cursor = db.query(historyHelper.TABLE_NAME_HISTORY,null,null,null,null,null,null);
+        @SuppressLint("Recycle") Cursor cursor = db.query(historyHelper.TABLE_NAME_HISTORY,null,null,null,null,null,null);
         if(cursor.moveToFirst()){
             do {
                 String name = cursor.getString((cursor.getColumnIndex("Name")));
@@ -74,5 +95,14 @@ public class historyDao {
             }while (cursor.moveToNext());
         }
         return list;
+    }
+
+
+    /*删除所有历史记录*/
+    public void clearHistory(){
+        SQLiteDatabase db = historyHelper.getWritableDatabase();
+        db.execSQL("delete from "+historyHelper.TABLE_NAME_HISTORY);
+
+        db.close();
     }
 }

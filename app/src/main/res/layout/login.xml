@@ -32,6 +32,8 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="230dp"
             android:layout_marginLeft="18dp"
@@ -98,6 +100,7 @@
                     android:textColorHint="#bcbcbc"
                     android:inputType="textPassword"
                     android:autofillHints="000000" />
+
             </LinearLayout>
         </LinearLayout>
 

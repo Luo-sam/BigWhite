@@ -35,7 +35,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="263dp"
             android:layout_marginLeft="18dp"
             android:layout_marginRight="18dp"
             android:background="@drawable/login_form"
@@ -43,6 +43,7 @@
             android:orientation="vertical"
             android:paddingStart="43dp"
             android:paddingEnd="31dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,17 +58,18 @@
                     tools:ignore="ContentDescription" />
 
                 <EditText
+                    android:id="@+id/register_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:background="@null"
-                    android:imeOptions="actionNone"
-                    android:maxLines="1"
-                    android:hint="@string/account_hint"
-                    android:textColor="#000000"
-                    android:textColorHint="#bcbcbc"
                     android:autofillHints="xxx"
-                    android:inputType="text" />
+                    android:background="@null"
+                    android:hint="请输入邮箱"
+                    android:imeOptions="actionNone"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textColorHint="#bcbcbc" />
             </LinearLayout>
 
             <View
@@ -86,21 +88,103 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@mipmap/key"
-                    android:contentDescription="@string/enter_password" />
+                    android:contentDescription="@string/enter_password"
+                    android:src="@mipmap/key" />
 
                 <EditText
+                    android:id="@+id/register_verify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:autofillHints="ss"
+                    android:background="@null"
+                    android:hint="请输入验证码"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textColorHint="#bcbcbc" />
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="80dp"
+                    android:text="获取验证码"
+                    android:background="@drawable/login_register_activity_btn"
+                    android:onClick="verifyGet"
+                    android:textColor="@color/white"
+                    android:textSize="5sp"
+                    />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="23dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@mipmap/account"
+                    tools:ignore="ContentDescription" />
+
+                <EditText
+                    android:id="@+id/register_acc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:autofillHints="xxx"
                     android:background="@null"
-                    android:imeOptions="actionDone"
+                    android:hint="@string/account_hint"
+                    android:imeOptions="actionNone"
+                    android:inputType="text"
                     android:maxLines="1"
-                    android:hint="@string/key_hint"
-                    android:textColor="@color/black"
-                    android:textColorHint="#bcbcbc"
+                    android:textColor="#000000"
+                    android:textColorHint="#bcbcbc" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="23dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:contentDescription="@string/enter_password"
+                    android:src="@mipmap/key" />
+
+                <EditText
+                    android:id="@+id/register_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
                     android:autofillHints="ss"
-                    android:inputType="textPassword" />
+                    android:background="@null"
+                    android:hint="@string/key_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textColorHint="#bcbcbc" />
             </LinearLayout>
         </LinearLayout>
 
@@ -112,8 +196,10 @@
             android:layout_marginEnd="18dp"
             android:background="@drawable/login_register_activity_btn"
             android:text="@string/register"
+            android:onClick="registerGet"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:ignore="UsingOnClickInXml" />
 
     </LinearLayout>
 </RelativeLayout>

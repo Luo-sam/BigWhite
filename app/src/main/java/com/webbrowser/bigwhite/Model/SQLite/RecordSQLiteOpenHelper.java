@@ -23,7 +23,8 @@ public class RecordSQLiteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sqlStr = "CREATE TABLE IF NOT EXISTS records (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);";
+        String sqlStr = "CREATE TABLE IF NOT EXISTS records " +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);";
         db.execSQL(sqlStr);
     }
 

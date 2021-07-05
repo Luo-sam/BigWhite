@@ -1,10 +1,6 @@
 package com.webbrowser.bigwhite.View.adapter;
 
 
-/**
- * Created by Administrator on 2018/2/11.
- */
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +12,6 @@ import com.webbrowser.bigwhite.R;
 
 import java.util.List;
 
-/**
- * Created by 05 on 2016/7/27.
- */
 public class searchHistoryAdapter extends BaseAdapter {
 
     private final List<String> searchRecordsList;

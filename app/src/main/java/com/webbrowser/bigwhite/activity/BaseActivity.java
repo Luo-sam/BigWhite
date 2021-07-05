@@ -2,7 +2,9 @@ package com.webbrowser.bigwhite.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -25,5 +27,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         Intent intent = new Intent(mContext, cls);
         startActivity(intent);
     }
+    protected void saveToSp(String key,String val){
+        SharedPreferences sp = getSharedPreferences("sp_list",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(key,val);
+        editor.apply();
+    }
+    protected String getStringFromSp(String key){
+        SharedPreferences sp = getSharedPreferences("sp_list",MODE_PRIVATE);
+        return sp.getString(key,"");
+    }
+
+    public abstract void onClick(View v);
 }
 

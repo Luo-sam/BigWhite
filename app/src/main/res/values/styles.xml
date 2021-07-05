@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <style name="take_photo_anim" parent="android:Animation">-->
-<!--        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>-->
-<!--        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>-->
-<!--    </style>-->
+    <style name="edit_AlertDialog_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 是否启用标题栏 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 是否使用背景半透明 -->
+    </style>
 </resources>
