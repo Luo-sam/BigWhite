@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.widget;
+package com.webbrowser.bigwhite.View.myView;
 
 import android.content.Context;
 import android.util.AttributeSet;

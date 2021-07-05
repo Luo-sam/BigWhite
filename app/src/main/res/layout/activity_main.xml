@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F2F2"
     android:clipChildren="false"
-    tools:context=".MainActivity"
     android:gravity="center"
     android:orientation="vertical"
-    android:id="@+id/main_activity">
+    tools:context=".MainActivity">
 
     <!--搜索实现-->
-
-    <com.webbrowser.bigwhite.View.viewpager.MyViewPager
+    <com.webbrowser.bigwhite.View.myView.MyViewPager
         android:id="@+id/viewPager"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:clipChildren="false"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:animateLayoutChanges="true"
+        android:clipChildren="false" />
 
     <!--新增窗口按钮-->
     <LinearLayout
@@ -26,9 +25,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/dp_50"
         android:visibility="gone">
-
         <ImageView
             android:id="@+id/add_win"
             android:layout_width="40dp"
@@ -38,140 +36,142 @@
     </LinearLayout>
 
 
+    <LinearLayout
+        android:id="@+id/select_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="100"
+        android:background="#AAFDFCFC"
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/select_list"
+            android:id="@+id/clear_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#AA9E9E9E"
-            android:orientation="vertical">
+            android:layout_marginTop="40dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/clear_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="@string/back"
-                    android:onClick="list_back"
-                    android:src="@drawable/left"
-                    tools:ignore="UsingOnClickInXml" />
-            </LinearLayout>
-
-
-            <ListView
-                android:id="@+id/file_list"
-                android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="50dp"
-                android:divider="@drawable/line_bot_full" />
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:contentDescription="@string/back"
+                android:onClick="list_back"
+                android:src="@drawable/left"
+                tools:ignore="UsingOnClickInXml" />
 
             <TextView
                 android:id="@+id/add_file"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:gravity="right"
                 android:text="@string/new_file"
-                android:textSize="@dimen/size_20sp" />
+                android:textColor="@color/black"
+                android:textSize="@dimen/size_20sp"
+                tools:ignore="RtlHardcoded" />
         </LinearLayout>
 
 
-        <!--底部导航栏-->
+        <ListView
+            android:id="@+id/file_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="50dp"
+            android:divider="@drawable/line_bot_full" />
+    </LinearLayout>
+
+
+    <!--底部导航栏-->
+
+    <LinearLayout
+        android:id="@+id/navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="1dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
 
         <LinearLayout
-            android:id="@+id/navigation_bar"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="1dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/backLeft"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/left"
-                    android:contentDescription="@string/my_pop" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/backRight"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/right"
-                    android:contentDescription="@string/my_pop" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/home"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/home"
-                    android:contentDescription="@string/my_pop" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/more_windows"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/windows"
-                    android:contentDescription="@string/my_pop" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/my"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/my"
-                    android:contentDescription="@string/my_pop" />
-            </LinearLayout>
-
-
+            <ImageView
+                android:id="@+id/backLeft"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/left"
+                android:contentDescription="@string/my_pop" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/backRight"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/right"
+                android:contentDescription="@string/my_pop" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/home"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/home"
+                android:contentDescription="@string/my_pop" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/more_windows"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/windows"
+                android:contentDescription="@string/my_pop" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/my"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/my"
+                android:contentDescription="@string/my_pop" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
 
 

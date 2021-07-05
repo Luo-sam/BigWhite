@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.View.imageview;
+package com.webbrowser.bigwhite.View.myView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,6 +25,7 @@ public class MyImageView extends androidx.appcompat.widget.AppCompatImageView {
     private int myHeight;
 
     private Bitmap myBitmap;
+
     public MyImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
@@ -82,6 +83,7 @@ public class MyImageView extends androidx.appcompat.widget.AppCompatImageView {
         };
         thread.start();
     }
+
     //子线程不能操作UI，通过Handler设置图片
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
@@ -90,8 +92,7 @@ public class MyImageView extends androidx.appcompat.widget.AppCompatImageView {
             switch (msg.what) {
                 case GET_DATA_SUCCESS:
                     myBitmap = (Bitmap) msg.obj;
-//                    setImageBitmap(bitmap);
-
+                    setImageBitmap(myBitmap);
                     break;
                 case NETWORK_ERROR:
                     Toast.makeText(getContext(), "网络连接失败", Toast.LENGTH_SHORT).show();

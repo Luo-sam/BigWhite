@@ -20,9 +20,9 @@
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
             android:contentDescription="@string/back"
             android:onClick="back"
             app:srcCompat="@drawable/left"
@@ -30,24 +30,26 @@
 
         <TextView
             android:id="@+id/history_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="15dp"
             android:text="@string/bookmark_title"
-            android:textSize="24sp" />
+            android:textColor="#283137"
+            android:textSize="20sp" />
 
-        <TextView
-            android:onClick="clearBookmark"
-            android:id="@+id/clear_his"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/clear"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:textSize="24sp"
-            tools:ignore="RtlHardcoded,UsingOnClickInXml"
-            android:layout_marginEnd="15dp"/>
+<!--        <TextView-->
+<!--            android:onClick="clearBookmark"-->
+<!--            android:textColor="#283137"-->
+<!--            android:id="@+id/clear_his"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/clear"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="right"-->
+<!--            android:textSize="20sp"-->
+<!--            tools:ignore="RtlHardcoded,UsingOnClickInXml"-->
+<!--            android:layout_marginEnd="15dp"/>-->
     </LinearLayout>
 
     <LinearLayout

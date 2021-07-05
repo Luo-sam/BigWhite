@@ -10,10 +10,12 @@
 <!--咨询阅读板块 -->
 <LinearLayout
     android:id="@+id/advisory"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
     <TextView
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -21,6 +23,10 @@
         android:lines="2"
         android:id="@+id/title"/>
     <LinearLayout
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -31,6 +37,7 @@
         <TextView   
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="未知"
             android:id="@+id/author"/>
     </LinearLayout>
     <TextView
@@ -42,10 +49,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerview">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
+        android:id="@+id/recyclerview"/>
 </LinearLayout>
 
     <LinearLayout
@@ -85,7 +89,6 @@
 
     <!--搜索框-->
     <LinearLayout
-
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -147,7 +150,7 @@
             android:max="100"
             android:progress="50" />
 
-        <com.webbrowser.bigwhite.widget.MingWebView
+        <com.webbrowser.bigwhite.View.myView.MingWebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -156,6 +159,7 @@
 
     <!--搜索历史-->
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/search_his"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

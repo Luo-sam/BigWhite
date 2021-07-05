@@ -1,12 +1,7 @@
-package com.webbrowser.bigwhite.utils;
-
-import android.webkit.WebViewFragment;
+package com.webbrowser.bigwhite.Model.SQLite;
 
 import androidx.fragment.app.Fragment;
 
-import com.webbrowser.bigwhite.View.fragment.SearchFragment;
-
-import java.util.LinkedList;
 import java.util.List;
 
 public class WebPageHelper {

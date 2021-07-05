@@ -9,13 +9,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.data.register_res;
 import com.webbrowser.bigwhite.Model.data.verify_res;
 import com.webbrowser.bigwhite.R;
@@ -64,7 +60,7 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
     public void verifyGet(View view) {
         String emailAddress = email.getText().toString().trim();
         String verifyAddress = "http://139.196.180.89:8137/api/v1/users/verifyCode/register?email=" + emailAddress;
-
+        showToast(emailAddress);
         verifyToBack(verifyAddress, emailAddress);
     }
 
@@ -76,7 +72,7 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     /*异常处理*/
-                    showToast("网络错误");
+                    runOnUiThread(() -> showToast("网络错误"));
                 }
 
                 @Override
@@ -84,28 +80,21 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
                     /*得到的服务器返回值具体内容*/
                     assert response.body() != null;
                     final String responseData = response.body().string();
-//                    final String responseHeader = response.header("Authorization");
-
                     runOnUiThread(() -> {
                         Log.d("verify_response", responseData);
                         Gson gson = new Gson();
-                        verify_res res = gson.fromJson(responseData,verify_res.class);
+                        verify_res res = gson.fromJson(responseData, verify_res.class);
 
                         if (res.getState().getCode() == 0) {
                             showToast("成功发送到邮箱");
-                        } else if(res.getState().getMsg().equals("已发送验证码")){
+                        } else if (res.getState().getMsg().equals("已发送验证码")) {
                             showToast("已发送验证码");
-                        }else{
+                        } else {
                             showToast("无效的地址");
                         }
-
-
-
                     });
                 }
-                    }
-
-            );
+            });
         }
     }
 
@@ -121,10 +110,10 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
         if (!password.equals("")) {
             password = httpUtils.encrypt(password);
         }
-        registerToBack(registerAddress,emailAddress,verifyCode, account, password);
+        registerToBack(registerAddress, emailAddress, verifyCode, account, password);
     }
 
-    public void registerToBack(String address,String email, String verify, String acc, String key) {
+    public void registerToBack(String address, String email, String verify, String acc, String key) {
 
         if (stringUtils.isEmpty(email)) {
             showToast("请输入邮箱");
@@ -142,8 +131,8 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
             showToast("请输入密码");
             return;
         }
-        if (!stringUtils.isEmpty(acc) && !stringUtils.isEmpty(key)&&!stringUtils.isEmpty(verify)&&!stringUtils.isEmpty(email)) {
-            httpUtils.registerWithOkHttp(address,email,verify, acc, key, new Callback() {
+        if (!stringUtils.isEmpty(acc) && !stringUtils.isEmpty(key) && !stringUtils.isEmpty(verify) && !stringUtils.isEmpty(email)) {
+            httpUtils.registerWithOkHttp(address, email, verify, acc, key, new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     /*异常处理*/
@@ -159,21 +148,20 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
 
                     runOnUiThread(() -> {
 
-                          Log.d("register_response", responseData);
+                        Log.d("register_response", responseData);
                         Gson gson = new Gson();
-                        register_res res = gson.fromJson(responseData,register_res.class);
+                        register_res res = gson.fromJson(responseData, register_res.class);
 
                         if (res.getState().getCode() == 0) {
                             showToast("成功注册");
                             finish();
-                        } else if(res.getState().getMsg().equals("用户名已被占用")){
+                        } else if (res.getState().getMsg().equals("用户名已被占用")) {
                             showToast("用户名已被占用");
-                        }
-                          else if(res.getState().getMsg().equals("验证码不正确")){
-                                showToast("验证码不正确");
-                        } else if(res.getState().getMsg().equals("addUser.username: 长度需要在4和12之间")){
+                        } else if (res.getState().getMsg().equals("验证码不正确")) {
+                            showToast("验证码不正确");
+                        } else if (res.getState().getMsg().equals("addUser.username: 长度需要在4和12之间")) {
                             showToast("用户名长度需要在4和12之间");
-                        } else if(res.getState().getMsg().equals("密码须包含数字和字母，长度至少为6位")){
+                        } else if (res.getState().getMsg().equals("密码须包含数字和字母，长度至少为6位")) {
                             showToast("密码须包含数字和字母，长度至少为6位");
                         }
 
@@ -193,7 +181,6 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
     @Override
     public void onClick(View v) {
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -223,7 +210,6 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         int id = v.getId();
-
         if (id == R.id.enter_key) {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                 registerGet(v);
@@ -232,6 +218,4 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
         }
         return false;
     }
-
-
 }

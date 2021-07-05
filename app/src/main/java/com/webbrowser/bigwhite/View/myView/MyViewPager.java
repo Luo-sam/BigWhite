@@ -1,23 +1,18 @@
-package com.webbrowser.bigwhite.View.viewpager;
+package com.webbrowser.bigwhite.View.myView;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewFragment;
 import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.webbrowser.bigwhite.MainActivity;
-import com.webbrowser.bigwhite.R;
-import com.webbrowser.bigwhite.utils.WebPageHelper;
+import com.webbrowser.bigwhite.Model.SQLite.WebPageHelper;
 
 public class MyViewPager extends ViewPager {
     private boolean isFullScreen=true;

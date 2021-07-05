@@ -2,8 +2,8 @@ package com.webbrowser.bigwhite;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,37 +15,45 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.webkit.WebView;
 import android.webkit.WebViewFragment;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-//import com.hb.dialog.myDialog.MyAlertInputDialog;
+import com.google.gson.Gson;
 import com.hb.dialog.myDialog.MyAlertInputDialog;
+import com.webbrowser.bigwhite.Model.SQLite.WebPageHelper;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.data.historyData;
+import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.View.adapter.SectionsPageAdapter;
 import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
 import com.webbrowser.bigwhite.View.fragment.SearchFragment;
-import com.webbrowser.bigwhite.View.viewpager.MyViewPager;
+import com.webbrowser.bigwhite.View.myView.MyViewPager;
 import com.webbrowser.bigwhite.activity.BaseActivity;
-import com.webbrowser.bigwhite.utils.CrawlPageUtil;
-import com.webbrowser.bigwhite.utils.WebPageHelper;
-import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import com.webbrowser.bigwhite.activity.bookmark;
 import com.webbrowser.bigwhite.activity.chooseLoginRegister;
 import com.webbrowser.bigwhite.activity.history;
+import com.webbrowser.bigwhite.activity.login;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
+import com.webbrowser.bigwhite.utils.httpUtils;
+import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+//import com.hb.dialog.myDialog.MyAlertInputDialog;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*log的标签*/
@@ -61,9 +69,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout select_list;
     private ListView file_list;
     private bookmarkDao bookmarkDao;
-
     private List<String> list_file;
-
     /*搜索栏*/
     private MyViewPager viewPager;
     public List<Fragment> fragments;
@@ -71,14 +77,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     /*点击返回键调用*/
-    private long exitTime=0;
-    private static final int PRESS_BACK_EXIT_GAP=2000;
+    private long exitTime = 0;
+    private static final int PRESS_BACK_EXIT_GAP = 2000;
 
     /*主页初始layoutParams*/
     ViewGroup.LayoutParams mylayoutParams;
-
-    /*页面初始间距*/
-    private int pageMargin;
 
     /*onCreate方法*/
     @Override
@@ -92,30 +95,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initView();
     }
 
-    public MyViewPager getViewPager() {
-        return viewPager;
-    }
-
-    private void initView(){
-
+    private void initView() {
         /*添加标签文件夹*/
         TextView add_file = findViewById(R.id.add_file);
         list_file = new ArrayList<>();
         bookmarkDao = new bookmarkDao(MainActivity.this);
-//        bookmarkDao.addBookmark(new historyData("百度","www.baidu.com"),"我的标签");
         list_file = bookmarkDao.queryFilename();
-        Log.d("TAG", String.valueOf(list_file));
-
-
-
 
         /*添加标签*/
         select_list = findViewById(R.id.select_list);
         file_list = findViewById(R.id.file_list);
         viewPager = findViewById(R.id.viewPager);
-
         /*新增窗口*/
-        ImageView additon = findViewById(R.id.add_win);
+        ImageView addition = findViewById(R.id.add_win);
 
         /*获取token*/
         Token = getStringFromSp("token");
@@ -135,51 +127,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         home.setOnClickListener(this);
         morewindows.setOnClickListener(this);
         my.setOnClickListener(this);
-
-        additon.setOnClickListener(this);
+        addition.setOnClickListener(this);
         add_file.setOnClickListener(this);
     }
 
     private void initViewPager() {
         /*配置viewPager*/
-        /*可以有多少个搜索fragment*/
-//        viewPager.setOffscreenPageLimit(10);
-
         fragments = new ArrayList<>();
         Fragment fragment = new SearchFragment();
-
-//        Log.d("INFO", "initViewPager: " + currentFragmentId);
-
         this.fragments.add(fragment);
-
         WebPageHelper.webpagelist = this.fragments;
-
-
         ((ViewGroup) viewPager.getParent()).setOnTouchListener(new View.OnTouchListener() {
             protected float point_x, point_y; //手指按下的位置
             private int left, right, bottom;
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-//                Log.d("MotionEvent2", event.toString());
-                switch (event.getAction()){
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         WebViewFragment webViewFragment;
-
                         point_x = event.getRawX();
                         point_y = event.getRawY();
-
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float mov_x = event.getRawX() - point_x;
                         float mov_y = event.getRawY() - point_y;
-                        Log.d("trr","mov_y"+mov_y);
+                        Log.d("trr", "mov_y" + mov_y);
                         break;
                     case MotionEvent.ACTION_UP:
                         break;
 
                 }
-
                 return viewPager.dispatchTouchEvent(event);
             }
         });
@@ -193,9 +171,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onPageSelected(int position) {
-//                indicator.getChildAt(firstPosition).setEnabled(false);
-//                indicator.getChildAt(position).setEnabled(true);
-//                firstPosition = position;
             }
 
             @Override
@@ -203,49 +178,45 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             }
         });
-
         viewPager.setAdapter(new SectionsPageAdapter(getSupportFragmentManager(), this.fragments));
-//        viewPager.setSwipeable(false);
         //保存主页初始宽度
-        mylayoutParams =  viewPager.getLayoutParams();
-        pageMargin = viewPager.getPageMargin();
+        mylayoutParams = viewPager.getLayoutParams();
+        /*页面初始间距*/
+        int pageMargin = viewPager.getPageMargin();
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.backLeft){
+        if (id == R.id.backLeft) {
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
-            if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+            if (sc.getAdvisory().getVisibility() == View.VISIBLE) {
                 sc.getAdvisory().setVisibility(View.GONE);
                 sc.getLiner_search().setVisibility(View.VISIBLE);
                 sc.getWeb().setVisibility(View.VISIBLE);
-//                CrawlPageUtil.currentNews=null;
-                Log.d("imagesss", String.valueOf(CrawlPageUtil.currentNews));
             }
-            if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
+            if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {
                 sc.getWebView().goBack();
             }
-            if(sc.getSearchHis().getVisibility()==View.VISIBLE){
+            if (sc.getSearchHis().getVisibility() == View.VISIBLE) {
                 sc.getSearchHis().setVisibility(View.GONE);
                 sc.getTextUrl().clearFocus();
             }
-
             sc.getWebView().goBack();
-        }else if(id == R.id.backRight){
+        } else if (id == R.id.backRight) {
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             sc.getWebView().goForward();
-        }else if(id == R.id.home){
+        } else if (id == R.id.home) {
             CrawlPageUtil.currentNews = null;
-            Intent intent=new Intent(this,MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-        }else if(id == R.id.more_windows){
+        } else if (id == R.id.more_windows) {
             //加载多窗口视图
             initMultiWindowsView();
-        }else if(id == R.id.my){
+        } else if (id == R.id.my) {
             showPopFormBottom();
-        }else if(id ==R.id.add_file){
+        } else if (id == R.id.add_file) {
             final MyAlertInputDialog myAlertInputDialog = new MyAlertInputDialog(MainActivity.this).builder()
                     .setTitle("请输入")
                     .setEditText("");
@@ -259,100 +230,118 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 myAlertInputDialog.dismiss();
             });
             myAlertInputDialog.show();
-        }else if(id == R.id.add_win){
+        } else if (id == R.id.add_win) {
             addWin();
-//            viewPager.setCurrentItem(fragments.size()-1);
         }
     }
 
-
-
-
-
-
     @Override
-    public void onBackPressed(){
-       //返回上一页
+    public void onBackPressed() {
+        //返回上一页
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
-        if(sc.getAdvisory().getVisibility()==View.VISIBLE){
+        if (sc.getAdvisory().getVisibility() == View.VISIBLE) {
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
         }
-        if(sc.getIllegWebsite().getVisibility()==View.VISIBLE){
+        if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {
             sc.getIllegWebsite().setVisibility(View.GONE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
         }
-        if(sc.getSearchHis().getVisibility()==View.VISIBLE){
+        if (sc.getSearchHis().getVisibility() == View.VISIBLE) {
             sc.getSearchHis().setVisibility(View.GONE);
             sc.getTextUrl().clearFocus();
         }
-        if(sc.getWebView().canGoBack()){
+        if (sc.getWebView().canGoBack()) {
             sc.getWebView().goBack();
-        }else{
-            if((System.currentTimeMillis()-exitTime)>PRESS_BACK_EXIT_GAP){
+        } else {
+            if ((System.currentTimeMillis() - exitTime) > PRESS_BACK_EXIT_GAP) {
                 //点击两次就退出
-                Toast.makeText(mContext,"再按一次退出浏览器",Toast.LENGTH_SHORT).show();
-                exitTime=System.currentTimeMillis();
-            }else {
+                Toast.makeText(mContext, "再按一次退出浏览器", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
                 super.onBackPressed();
             }
         }
     }
 
     /*my弹窗*/
-    public void showPopFormBottom(){
-        myPopWin = new myPopWin(this,onClickListener);
-
-        myPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER,0,0);
+    public void showPopFormBottom() {
+        myPopWin = new myPopWin(this, onClickListener);
+        myPopWin.showAtLocation(findViewById(R.id.my), Gravity.CENTER, 0, 0);
     }
-    public void initFile(){
-        bookmarkFileAdapter mainFile = new bookmarkFileAdapter(MainActivity.this,list_file);
+
+    public void initFile() {
+        bookmarkFileAdapter mainFile = new bookmarkFileAdapter(MainActivity.this, list_file);
         file_list.setAdapter(mainFile);
 
         /*绑定item的点击事件*/
         file_list.setOnItemClickListener((parent, view, position, id) -> {
             String fileName = list_file.get(position);
             String name = sc.getWebView().getTitle().trim();
-            String url =  sc.getWebView().getUrl();
-            bookmarkDao.addBookmark(new historyData(name,url),fileName);
+            String url = sc.getWebView().getUrl();
+            SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
+            String head = sp.getString("token", "");
+
+            bookmarkDao.addBookmark(new historyData(name, url,"1"), fileName);
+            httpUtils.putBookMark(head, "http://139.196.180.89:8137/api/v1/collections", fileName, name, url, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() -> showToast("上传标签网络错误"));
+                }
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    /*得到的服务器返回值具体内容*/
+                    assert response.body() != null;
+                    final String responseData = response.body().string();
+                    Gson gson = new Gson();
+                    responseData_put responsePut = gson.fromJson(responseData, responseData_put.class);
+                    runOnUiThread(() -> {
+                        if (responsePut.getState().getCode() == 0) {
+                            showToast("添加到后端成功");
+                        } else {
+                            startActivity(new Intent(MainActivity.this, login.class));
+                        }
+                    });
+                }
+            });
+
             select_list.setVisibility(View.GONE);
             showToast("添加成功");
         });
     }
 
 
-
-
     private final View.OnClickListener onClickListener = v -> {
         int id = v.getId();
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
-        if(id == R.id.login){
+        if (id == R.id.login) {
             myPopWin.dismiss();
             startActivity(new Intent(MainActivity.this, chooseLoginRegister.class));
-        }else if(id == R.id.add_bookmark){
+        } else if (id == R.id.add_bookmark) {
             myPopWin.dismiss();
             select_list.setVisibility(View.VISIBLE);
             initFile();
-        }else if(id == R.id.bookmark){
+        } else if (id == R.id.bookmark) {
             myPopWin.dismiss();
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this,bookmark.class);
-            startActivityForResult(intent,123);
-        }else if(id == R.id.history){
+            intent.setClass(MainActivity.this, bookmark.class);
+            startActivityForResult(intent, 123);
+        } else if (id == R.id.history) {
             myPopWin.dismiss();
             Intent intent = new Intent();
-            intent.setClass(MainActivity.this,history.class);
-            startActivityForResult(intent,456);
-        }else if(id == R.id.exit){
-            Toast.makeText(mContext, "退出登录功能开发中", Toast.LENGTH_SHORT).show();
+            intent.setClass(MainActivity.this, history.class);
+            startActivityForResult(intent, 456);
+        } else if (id == R.id.exit) {
+            saveToSp("token", "");
+            myPopWin.change();
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == resultCode){
+        if (requestCode == resultCode) {
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             sc.getWebView().loadUrl(data != null ? data.getExtras().getString("address") : "www.baidu.com");
         }
@@ -363,26 +352,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    private void initMultiWindowsView(){
+    private void initMultiWindowsView() {
 
 
         this.fragments = WebPageHelper.webpagelist;
 
         for (Fragment webViewFragment : this.fragments) {
-            WebView webView = ((SearchFragment)webViewFragment).getWebView();
-
+            WebView webView = ((SearchFragment) webViewFragment).getWebView();
             webView.onPause();
             webView.pauseTimers();
-//            webView.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    return true;
-//                }
-//            });
         }
 
 
-        LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.navigation_bar);
 
         LinearLayout win_add = (LinearLayout) findViewById(R.id.multywin);
         //隐藏底部导航栏
@@ -390,7 +372,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         scaleWindow();
         //设置背景颜色为灰黑色
-        LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xFF292727);
 
         //设置页间距
@@ -428,11 +410,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         animation.startNow();
     }
 
-    public void addWin(){
+    public void addWin() {
 
         for (Fragment webViewFragment : this.fragments) {
-            ((SearchFragment)webViewFragment).getWebView().onResume();     //由于调用onResume会导致所有WebView都处于活动状态，而onPause只是针对单个
-            ((SearchFragment)webViewFragment).getWebView().resumeTimers();
+            ((SearchFragment) webViewFragment).getWebView().onResume();     //由于调用onResume会导致所有WebView都处于活动状态，而onPause只是针对单个
+            ((SearchFragment) webViewFragment).getWebView().resumeTimers();
         }
 
 
@@ -444,13 +426,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         LinearLayout win_add = (LinearLayout) findViewById(R.id.multywin);
         win_add.setVisibility(View.GONE);
         //显示底部导航栏
-        LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.navigation_bar);
         layout.setVisibility(View.VISIBLE);
         viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(currentItem, false);
         enlargeWindow();
         //设置背景颜色为白色
-        LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
 
 //        //设置页间距
@@ -485,30 +467,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         animation.startNow();
     }
 
-    public void toWindow(){
+    public void toWindow() {
         for (Fragment webViewFragment : this.fragments) {
-            ((SearchFragment)webViewFragment).getWebView().onResume();     //由于调用onResume会导致所有WebView都处于活动状态，而onPause只是针对单个
-            ((SearchFragment)webViewFragment).getWebView().resumeTimers();
+            ((SearchFragment) webViewFragment).getWebView().onResume();     //由于调用onResume会导致所有WebView都处于活动状态，而onPause只是针对单个
+            ((SearchFragment) webViewFragment).getWebView().resumeTimers();
         }
         //隐藏添加按钮
         LinearLayout win_add = (LinearLayout) findViewById(R.id.multywin);
         win_add.setVisibility(View.GONE);
         //显示底部导航栏
-        LinearLayout layout=(LinearLayout) findViewById(R.id.navigation_bar);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.navigation_bar);
         layout.setVisibility(View.VISIBLE);
 
         viewPager.getAdapter().notifyDataSetChanged();
         enlargeWindow();
         //设置背景颜色为白色
-        LinearLayout mainLayout = (LinearLayout)findViewById(R.id.main_activity);
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
 
-//        //设置页间距
-//        viewPager.setPageMargin(pageMargin);
-//
-//        //设置页面左右间距
-//        viewPager.setLayoutParams(mylayoutParams);
-//
         viewPager.setClipChildren(true);
         viewPager.setFullScreen(true);
     }

@@ -2,14 +2,12 @@ package com.webbrowser.bigwhite.utils;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.webbrowser.bigwhite.MainActivity;
+import com.webbrowser.bigwhite.Model.SQLite.WebPageHelper;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -36,9 +34,7 @@ public class OkHttpUtil {
     final static String TAG = "OkHttpUtils";
 
     public static String OkGetArt(String url) throws InterruptedException {
-//        url = "https://mbd.baidu.com/newspage/data/landingpage?s_type=news&dsp=wise&context=%7B%22nid%22%3A%22news_9611519213472294428%22%7D&pageType=1&n_type=1&p_from=-1&rec_src=52&innerIframe=1";
         final List<String> html = new ArrayList<>();
-//        OkHttpClient client = new OkHttpClient();
         Context context = WebPageHelper.webpagelist.get(0).getContext();
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();

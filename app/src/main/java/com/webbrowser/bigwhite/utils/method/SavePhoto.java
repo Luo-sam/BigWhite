@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.utils;
+package com.webbrowser.bigwhite.utils.method;
 
 import android.content.ContentValues;
 import android.content.Context;

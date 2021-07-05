@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.View.relativeLayout;
+package com.webbrowser.bigwhite.View.myView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

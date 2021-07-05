@@ -11,17 +11,18 @@ public class historyHelper extends SQLiteOpenHelper {
     /*设置初始值*/
     private static final String name = "myhistory.db";
     private static final int version = 1;
+
     public historyHelper(@Nullable Context context) {
         super(context, name, null, version);
     }
 
     /*
-    * 数据库建表
-    * */
+     * 数据库建表
+     * */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql_history =   "create table if not exists " + TABLE_NAME_HISTORY +
-                " (Name char(20), Address char(20));";
+        String sql_history = "create table if not exists " + TABLE_NAME_HISTORY +
+                " (Id Integer, Name char(20), Address char(20));";
         db.execSQL(sql_history);
     }
 

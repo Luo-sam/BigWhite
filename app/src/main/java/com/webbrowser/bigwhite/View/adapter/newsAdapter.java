@@ -1,7 +1,6 @@
 package com.webbrowser.bigwhite.View.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -15,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.webbrowser.bigwhite.R;
-import com.webbrowser.bigwhite.View.imageview.MyImageView;
-import com.webbrowser.bigwhite.utils.picDialog;
+import com.webbrowser.bigwhite.View.myView.MyImageView;
+import com.webbrowser.bigwhite.utils.method.picDialog;
 import com.webbrowser.bigwhite.utils.url_image.URLImageParser;
 
 import java.util.List;
@@ -61,15 +60,6 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHolder> {
         String s = data.get(position);
         if (s.startsWith("https://f") || s.startsWith("https://p")) {
             holder.imageView.setImageURL(s);
-            Bitmap bitmap = holder.imageView.getMyBitmap();
-            holder.imageView.setImageBitmap(bitmap);
-//            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-//            int width = wm.getDefaultDisplay().getWidth();
-//            if (bitmap.getWidth() != 0) {
-//                int height = (int) width * (bitmap.getHeight() / bitmap.getWidth());
-//                holder.imageView.setMaxWidth(width);
-//                holder.imageView.setMaxHeight(height);
-//            }
 
             /**
              *@Author luo

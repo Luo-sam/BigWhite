@@ -1,19 +1,31 @@
 package com.webbrowser.bigwhite.Model.data;
 
+
 public class historyData {
-    /*网页的网址*/
-    private String address;
-    /*网页名*/
+    private String id;
     private String name;
-    /*构造函数*/
-    public historyData(String name, String address){
+    private String address;
+
+    public historyData(String id, String name, String address) {
+        this.id = id;
         this.name = name;
         this.address = address;
     }
 
-    /*getter和setter方法*/
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAddress() {
@@ -23,9 +35,4 @@ public class historyData {
     public void setAddress(String address) {
         this.address = address;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
 }

@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.utils;
+package com.webbrowser.bigwhite.utils.method;
 
 import android.app.Activity;
 import android.app.Dialog;

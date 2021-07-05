@@ -1,74 +1,179 @@
 package com.webbrowser.bigwhite.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.hb.dialog.myDialog.ActionSheetDialog;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
-import com.webbrowser.bigwhite.Model.data.historyData;
+import com.webbrowser.bigwhite.Model.data.deleteThisHis;
+import com.webbrowser.bigwhite.Model.data.historyResponse;
 import com.webbrowser.bigwhite.R;
-import com.webbrowser.bigwhite.View.adapter.historyAdapter;
+import com.webbrowser.bigwhite.View.adapter.historyBackAdapter;
+import com.webbrowser.bigwhite.utils.httpUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class history extends AppCompatActivity {
-    private List<historyData> data;
-    private List<historyData> temList;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+public class history extends BaseActivity {
+
+    private List<historyResponse.DataBean> dataBack;
+    private List<historyResponse.DataBean> temListBack;
     private historyDao history;
+    private ListView historyList;
+    private String head;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history);
+        initHistoryFromBack();
         initHistory();
     }
-    public void initHistory(){
-        data = new ArrayList<>();
+
+
+    public void initHistoryFromBack() {
+        dataBack = new ArrayList<>();
+        historyList = findViewById(R.id.history_list);
         /*初始化list中history的属性*/
         history = new historyDao(this);
-        temList = history.queryHistory();
-        reversedList();
-        historyAdapter historyAdapter = new historyAdapter(history.this, R.layout.h_b_item,data);
-        ListView historyList = findViewById(R.id.history_list);
+        SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
+        head = sp.getString("token", "");
+        if (!head.equals("")) {
+            String backAddress = "http://139.196.180.89:8137/api/v1/histories";
+            httpUtils.getHistoryFromBack(backAddress, head, new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    /*得到的服务器返回值具体内容*/
+                    assert response.body() != null;
+                    final String responseData = response.body().string();
+                    runOnUiThread(() -> {
+                        Gson gson = new Gson();
+                        historyResponse responsePut = gson.fromJson(responseData, historyResponse.class);
+                        if (responsePut.getState().getCode() == 0) {
+                            temListBack = responsePut.getData();
+                            history.clearHistory();
+                            history.addHistoryFromBack(temListBack);
+                            showToast("更新历史记录成功");
+                        } else {
+                            showToast("由后端更新历史记录失败");
+                        }
+
+                    });
+
+                }
+            });
+        }
+    }
+    public void initHistory() {
+        temListBack = history.queryHistory();
+        reversedListBack();
+        historyBackAdapter historyAdapter = new historyBackAdapter(history.this, R.layout.h_b_item, dataBack);
         historyList.setAdapter(historyAdapter);
         historyList.setOnItemClickListener((parent, view, position, id) -> {
-            String address = data.get(position).getAddress();
+            String address = dataBack.get(position).getUrl();
             Intent intent = new Intent();
-            intent.putExtra("address",address);
-            history.this.setResult(123,intent);
+            intent.putExtra("address", address);
+            history.this.setResult(456, intent);
             finish();
         });
+
+        historyList.setOnItemLongClickListener((adapterView, view, i, l) -> {
+            ActionSheetDialog dialog = new ActionSheetDialog(history.this).builder().setTitle("请选择")
+                    .addSheetItem("删除当前信息", null, which -> {
+                        historyResponse.DataBean hs = dataBack.get(i);
+                        history.clearThisMess(hs);
+
+                        String backAddress1 = "http://139.196.180.89:8137/api/v1/histories/"+hs.getId();
+                        showToast(backAddress1);
+                        httpUtils.deleteHis(backAddress1, head, new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                            }
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                /*得到的服务器返回值具体内容*/
+                                assert response.body() != null;
+                                final String responseData = response.body().string();
+                                runOnUiThread(() -> {
+                                    Gson gson = new Gson();
+                                    deleteThisHis responsePut = gson.fromJson(responseData, deleteThisHis.class);
+                                    if (responsePut.getState().getCode() == 0) {
+                                        showToast("删除成功"+hs.getId());
+                                    } else {
+                                        showToast("由后端更新历史记录失败");
+                                    }
+                                });
+                            }
+                        });
+                        initHistory();
+                    }).addSheetItem("删除全部信息", null, whi -> {
+                        AlertDialog.Builder clearSure = new AlertDialog.Builder(history.this);
+                        clearSure.setPositiveButton("确认",
+                                (dialog1, which) -> {
+                                    history.clearHistory();
+                                    initHistory();
+                                    String backAddress1 = "http://139.196.180.89:8137/api/v1/histories";
+                                    showToast(backAddress1);
+                                    httpUtils.deleteHis(backAddress1, head, new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                                        }
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            /*得到的服务器返回值具体内容*/
+                                            assert response.body() != null;
+                                            final String responseData = response.body().string();
+                                            runOnUiThread(() -> Log.d("huis", responseData));
+                                        }
+                                    });
+
+
+                                });
+
+                        clearSure.setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss());
+                        clearSure.setTitle("提示");
+                        clearSure.setMessage("您确认清空搜索历史吗");
+                        clearSure.show();
+                    });
+            dialog.show();
+            return true;
+        });
+
+
     }
+
     public void back(View view) {
         finish();
     }
 
-    /*颠倒list顺序，用户输入的信息会从上依次往下显示*/
-    private void reversedList(){
-        data.clear();
-        for(int i = temList.size() - 1 ; i >= 0 ; i --) {
-            data.add(temList.get(i));
-        }
+    @Override
+    public void onClick(View v) {
+
     }
-
-    public void clearHis(View view) {
-        AlertDialog.Builder clearSure = new AlertDialog.Builder(history.this);
-        clearSure.setPositiveButton("确认",
-                (dialog, which) -> {
-                    history.clearHistory();
-                    initHistory();
-                });
-
-        clearSure.setNegativeButton("取消",(dialog, which) -> dialog.dismiss());
-        clearSure.setTitle("提示");
-        clearSure.setMessage("您确认清空搜索历史吗");
-        clearSure.show();
-
+    private void reversedListBack() {
+        dataBack.clear();
+        for (int i = temListBack.size() - 1; i >= 0; i--) {
+            dataBack.add(temListBack.get(i));
+        }
     }
 }

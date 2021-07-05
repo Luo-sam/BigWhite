@@ -1,12 +1,10 @@
 package com.webbrowser.bigwhite.activity;
 
 import android.content.Intent;
-import android.icu.text.Transliterator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -21,7 +19,6 @@ import com.webbrowser.bigwhite.View.adapter.bookmarkAdapter;
 import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class bookmark extends AppCompatActivity {

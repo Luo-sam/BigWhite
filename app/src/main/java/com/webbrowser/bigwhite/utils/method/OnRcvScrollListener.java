@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite.View.action;
+package com.webbrowser.bigwhite.utils.method;
 
 
 import androidx.annotation.NonNull;

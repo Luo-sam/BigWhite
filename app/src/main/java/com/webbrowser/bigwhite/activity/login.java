@@ -1,7 +1,6 @@
 package com.webbrowser.bigwhite.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -58,6 +57,7 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
             password =  httpUtils.encrypt(password);
         }
         loginToBack(loginAddress,account,password);
+        saveToSp("Name",account);
     }
     public void loginToBack(String address,String acc,String key) {
 
@@ -85,7 +85,6 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
                     final String responseHeader = response.header("Authorization");
 
                     runOnUiThread(() -> {
-                        Log.d("his", responseData);
                         if (responseHeader == null) {
                             showToast("账号密码错误");
                         }else{
