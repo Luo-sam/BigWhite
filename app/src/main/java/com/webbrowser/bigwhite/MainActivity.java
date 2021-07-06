@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +45,10 @@ import com.webbrowser.bigwhite.activity.login;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
-
+import com.webbrowser.bigwhite.activity.personalCenterActivity;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
+//import com.webbrowser.bigwhite.utils.WebPageHelper;
+import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +78,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private MyViewPager viewPager;
     public List<Fragment> fragments;
     private SearchFragment sc;
+    private  LinearLayout windows;
 
 
     /*点击返回键调用*/
@@ -101,6 +106,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         list_file = new ArrayList<>();
         bookmarkDao = new bookmarkDao(MainActivity.this);
         list_file = bookmarkDao.queryFilename();
+        windows=findViewById(R.id.windows);
 
         /*添加标签*/
         select_list = findViewById(R.id.select_list);
@@ -191,6 +197,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (id == R.id.backLeft) {
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             if (sc.getAdvisory().getVisibility() == View.VISIBLE) {
+                windows.setVisibility(View.VISIBLE);
                 sc.getAdvisory().setVisibility(View.GONE);
                 sc.getLiner_search().setVisibility(View.VISIBLE);
                 sc.getWeb().setVisibility(View.VISIBLE);
@@ -335,6 +342,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (id == R.id.exit) {
             saveToSp("token", "");
             myPopWin.change();
+        }else if(id==R.id.person){
+            startActivity(new Intent(MainActivity.this, personalCenterActivity.class));
         }
     };
 
@@ -487,5 +496,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         viewPager.setClipChildren(true);
         viewPager.setFullScreen(true);
+    }
+    public LinearLayout getWindows() {
+        return windows;
     }
 }

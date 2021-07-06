@@ -26,6 +26,9 @@
     <string name="new_file">添加文件夹</string>
     <string name="author">来源：</string>
     <string name="dismiss">取消</string>
+    <string name="sync_bookmark">书签同步</string>
+    <string name="sync_history">历史同步</string>
+    <string name="personalCenter">个人中心</string>
     <string name="loginOrRegister">登录/注册</string>
     <string name="email">请输入邮箱</string>
     <string name="yzm">请输入验证码</string>

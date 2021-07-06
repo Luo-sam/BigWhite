@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.NewsData;
@@ -88,6 +89,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     private Activity mActivity;
     private LinearLayout advisory;
     private RecyclerView recyclerView;
+    private MainActivity mainActivity;
 
 
 
@@ -124,6 +126,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     /*初始化得到的view*/
     @SuppressLint("CutPasteId")
     private void initView(View view) {
+        mainActivity=(MainActivity)getActivity();
         video = view.findViewById(R.id.video);
         linearLayout = view.findViewById(R.id.linearLayout);
         advisory = view.findViewById(R.id.advisory);
@@ -139,6 +142,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         title = view.findViewById(R.id.title);
         author = view.findViewById(R.id.author);
         recyclerView = view.findViewById(R.id.recyclerview);
+
 
 
         history = new historyDao(mActivity);
@@ -350,6 +354,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                     /*设置动态更新recyclerView*/
                     recyclerView.setOnScrollListener(new OnRcvScrollListener());
                     recyclerView.setItemViewCacheSize(50);
+                    mainActivity.getWindows().setVisibility(View.GONE);
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);
@@ -364,6 +369,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                     title.setText(CrawlPageUtil.videoData.getTitle());
                     author.setText(CrawlPageUtil.videoData.getAuthor());
                     video.setText(CrawlPageUtil.videoData.getVideoUrl());
+                    mainActivity.getWindows().setVisibility(View.GONE);
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);
