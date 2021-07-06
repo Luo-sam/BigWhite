@@ -77,7 +77,9 @@ public class bookmarkResponse implements Serializable {
         private String title;
         private String url;
 
-        public DataBean(String title, String url) {
+
+        public DataBean(int id, String title, String url) {
+            this.id = id;
             this.title = title;
             this.url = url;
         }

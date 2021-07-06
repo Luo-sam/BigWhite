@@ -12,7 +12,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.webbrowser.bigwhite.Model.data.register_res;
+import com.webbrowser.bigwhite.Model.data.simpleResponse;
 import com.webbrowser.bigwhite.Model.data.verify_res;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.utils.editTextUtils;
@@ -150,7 +150,7 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
 
                         Log.d("register_response", responseData);
                         Gson gson = new Gson();
-                        register_res res = gson.fromJson(responseData, register_res.class);
+                        simpleResponse res = gson.fromJson(responseData, simpleResponse.class);
 
                         if (res.getState().getCode() == 0) {
                             showToast("成功注册");

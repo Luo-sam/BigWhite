@@ -2,7 +2,6 @@ package com.webbrowser.bigwhite;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -14,20 +13,16 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.dueeeke.videoplayer.player.VideoView;
-import com.google.gson.Gson;
 import com.hb.dialog.myDialog.MyAlertInputDialog;
 import com.webbrowser.bigwhite.Model.SQLite.WebPageHelper;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
-import com.webbrowser.bigwhite.Model.data.historyData;
-import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.View.adapter.SectionsPageAdapter;
 import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
 import com.webbrowser.bigwhite.View.fragment.SearchFragment;
@@ -36,25 +31,18 @@ import com.webbrowser.bigwhite.activity.BaseActivity;
 import com.webbrowser.bigwhite.activity.bookmark;
 import com.webbrowser.bigwhite.activity.chooseLoginRegister;
 import com.webbrowser.bigwhite.activity.history;
-import com.webbrowser.bigwhite.activity.login;
 import com.webbrowser.bigwhite.activity.personalCenterActivity;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
-import com.webbrowser.bigwhite.utils.httpUtils;
+import com.webbrowser.bigwhite.utils.method.saveInfoToThis;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 //import com.webbrowser.bigwhite.utils.WebPageHelper;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
-    /*log的标签*/
     /*保存Token值*/
     private String Token;
 
@@ -104,7 +92,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initView() {
-
         /*添加标签文件夹*/
         TextView add_file = findViewById(R.id.add_file);
         list_file = new ArrayList<>();
@@ -147,51 +134,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Fragment fragment = new SearchFragment();
         this.fragments.add(fragment);
         WebPageHelper.webpagelist = this.fragments;
-
-
-
-
-//        ((ViewGroup) viewPager.getParent()).setOnTouchListener(new View.OnTouchListener() {
-//            protected float point_x, point_y; //手指按下的位置
-//            private int left, right, bottom;
-//            @SuppressLint("ClickableViewAccessibility")
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        WebViewFragment webViewFragment;
-//                        point_x = event.getRawX();
-//                        point_y = event.getRawY();
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        float mov_x = event.getRawX() - point_x;
-//                        float mov_y = event.getRawY() - point_y;
-//                        Log.d("trr", "mov_y" + mov_y);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        break;
-//
-//                }
-//                return viewPager.dispatchTouchEvent(event);
-//            }
-//        });
-
         viewPager.setOffscreenPageLimit(8);
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                Log.d("MotionEvent_pageScro", "" + position);
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
         viewPager.setAdapter(new SectionsPageAdapter(getSupportFragmentManager(), this.fragments));
         //保存主页初始宽度
         mylayoutParams = viewPager.getLayoutParams();
@@ -297,32 +240,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             String fileName = list_file.get(position);
             String name = sc.getWebView().getTitle().trim();
             String url = sc.getWebView().getUrl();
-            SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
-            String head = sp.getString("token", "");
-
-            bookmarkDao.addBookmark(new historyData(name, url), fileName);
-            httpUtils.putBookMark(head, "http://139.196.180.89:8137/api/v1/collections", fileName, name, url, new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call , @NonNull IOException e) {
-                    runOnUiThread(() -> showToast("上传标签网络错误"));
-                }
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    /*得到的服务器返回值具体内容*/
-                    assert response.body() != null;
-                    final String responseData = response.body().string();
-                    Gson gson = new Gson();
-                    responseData_put responsePut = gson.fromJson(responseData, responseData_put.class);
-                    runOnUiThread(() -> {
-                        if (responsePut.getState().getCode() == 0) {
-                            showToast("添加到后端成功");
-                        } else {
-                            startActivity(new Intent(MainActivity.this, login.class));
-                        }
-                    });
-                }
-            });
-
+            /*添加到后端*/
+            saveInfoToThis.saveBookmark(bookmarkDao,name,url,fileName,MainActivity.this);
             select_list.setVisibility(View.GONE);
             showToast("添加成功");
         });
@@ -391,7 +310,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         scaleWindow();
         //设置背景颜色为灰黑色
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_activity);
+        RelativeLayout mainLayout = findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xFF292727);
 
         //设置页间距
@@ -451,7 +370,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         viewPager.setCurrentItem(currentItem, false);
         enlargeWindow();
         //设置背景颜色为白色
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_activity);
+        RelativeLayout mainLayout = findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
 
 //        //设置页间距
@@ -501,7 +420,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         viewPager.getAdapter().notifyDataSetChanged();
         enlargeWindow();
         //设置背景颜色为白色
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_activity);
+        RelativeLayout mainLayout =  findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
 
         viewPager.setClipChildren(true);

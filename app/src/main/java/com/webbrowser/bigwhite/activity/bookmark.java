@@ -3,7 +3,6 @@ package com.webbrowser.bigwhite.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -14,7 +13,7 @@ import com.google.gson.Gson;
 import com.hb.dialog.myDialog.ActionSheetDialog;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.data.bookmarkResponse;
-import com.webbrowser.bigwhite.Model.data.deleteThisHis;
+import com.webbrowser.bigwhite.Model.data.simpleResponse;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.bookmarkAdapter;
 import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
@@ -43,17 +42,16 @@ public class bookmark extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bookmark);
+        files = findViewById(R.id.file_layout);
+        bookmark_list = findViewById(R.id.bookmark_layout);
+        bookmark_list.setVisibility(View.GONE);
+        bookmark = new bookmarkDao(this);
+        list_file = new ArrayList<>();
         initFile();
     }
 
     public void initFile(){
-        files = findViewById(R.id.file_layout);
-        bookmark_list = findViewById(R.id.bookmark_layout);
-        bookmark_list.setVisibility(View.GONE);
-
         /*初始化list中history的属性*/
-        bookmark = new bookmarkDao(this);
-        list_file = new ArrayList<>();
         list_file = bookmark.queryFilename();
         bookmarkFileAdapter myFilesAdapter = new bookmarkFileAdapter(bookmark.this,list_file);
         ListView fileList = findViewById(R.id.bookmark_files_list);
@@ -71,11 +69,12 @@ public class bookmark extends BaseActivity {
         data = new ArrayList<>();
         SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
         String head = sp.getString("token", "");
+        String ifBookmark = sp.getString("bookmark","");
         temList = bookmark.querySimilarRecord(fileName);
         reversedList();
-        bookmarkAdapter historyAdapter = new bookmarkAdapter(bookmark.this, R.layout.h_b_item,data);
+        bookmarkAdapter bookmarkAdapter = new bookmarkAdapter(bookmark.this, R.layout.h_b_item,data);
         ListView bookmarkList = findViewById(R.id.bookmark_list);
-        bookmarkList.setAdapter(historyAdapter);
+        bookmarkList.setAdapter(bookmarkAdapter);
 
         bookmarkList.setOnItemClickListener((parent, view, position, id) -> {
             String address = data.get(position).getUrl();
@@ -90,34 +89,62 @@ public class bookmark extends BaseActivity {
                     .addSheetItem("删除当前信息", null, which -> {
                         bookmarkResponse.DataBean hs = data.get(i);
                         bookmark.clearThisMess(hs);
-                        String backAddress1 = "http://139.196.180.89:8137/api/v1/collections/"+hs.getId();
-                        showToast(backAddress1);
-                        httpUtils.deleteHis(backAddress1, head, new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                runOnUiThread(() -> showToast("获取历史记录网络错误"));
-                            }
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                /*得到的服务器返回值具体内容*/
-                                assert response.body() != null;
-                                final String responseData = response.body().string();
-                                runOnUiThread(() -> {
-                                    Log.d("backTo", responseData);
-                                    Gson gson = new Gson();
-                                    deleteThisHis responsePut = gson.fromJson(responseData, deleteThisHis.class);
-                                    if (responsePut.getState().getCode() == 0) {
-                                        showToast("删除成功"+hs.getId());
-                                    } else {
-                                        showToast("由后端更新标签记录失败");
-                                    }
-                                });
-                            }
-                        });
+                        if(ifBookmark.equals("true")){
+                            String backAddress1 = "http://139.196.180.89:8137/api/v1/collections/id/"+hs.getId();
+                            httpUtils.delete(backAddress1, head, new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                                }
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    /*得到的服务器返回值具体内容*/
+                                    assert response.body() != null;
+                                    final String responseData = response.body().string();
+                                    runOnUiThread(() -> {
+                                        Gson gson = new Gson();
+                                        simpleResponse responsePut = gson.fromJson(responseData, simpleResponse.class);
+                                        if (responsePut.getState().getCode() == 0) {
+                                            showToast("删除成功");
+                                        } else {
+                                            showToast("由后端更新标签记录失败");
+                                        }
+                                    });
+                                }
+                            });
+                        }
                         initBookmarkArray();
-                        showToast(hs.getUrl());
+                        showToast(String.valueOf(bookmarkAdapter.getCount()));
+                        if (bookmarkAdapter.getCount() == 1) {
+                            bookmark_list.setVisibility(View.GONE);
+                            files.setVisibility(View.VISIBLE);
+                        }
                     }).addSheetItem("删除当前文件夹", null, which -> {
                         bookmark.clearThisFile(fileName);
+                        if(ifBookmark.equals("true")){
+                            String backAddress1 = "http://139.196.180.89:8137/api/v1/collections/tag/"+fileName;
+                            httpUtils.delete(backAddress1, head, new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                                }
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    /*得到的服务器返回值具体内容*/
+                                    assert response.body() != null;
+                                    final String responseData = response.body().string();
+                                    runOnUiThread(() -> {
+                                        Gson gson = new Gson();
+                                        simpleResponse responsePut = gson.fromJson(responseData, simpleResponse.class);
+                                        if (responsePut.getState().getCode() == 0) {
+                                            showToast("删除成功"+fileName);
+                                        } else {
+                                            showToast("由后端更新标签记录失败");
+                                        }
+                                    });
+                                }
+                            });
+                        }
                         bookmark_list.setVisibility(View.GONE);
                         files.setVisibility(View.VISIBLE);
                         initFile();

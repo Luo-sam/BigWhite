@@ -22,7 +22,7 @@ public class historyHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql_history = "create table if not exists " + TABLE_NAME_HISTORY +
-                " (Id Integer, Name char(20), Address char(20));";
+                " (Id Integer PRIMARY KEY autoincrement, Name char(20), Address char(20));";
         db.execSQL(sql_history);
     }
 

@@ -162,7 +162,7 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
                                 if (responsePut.getState().getCode() == 0) {
                                     bookmarkTemList = responsePut.getData();
                                     for (bookmarkResponse.DataBean data:bookmarkTemList) {
-                                        Log.d("hssss", data.getTitle());
+                                        Log.d("hssss", String.valueOf(data.getId()));
                                     }
                                     bookmarkDao.clearBookmark();
                                     bookmarkDao.addBookmarkFromBack(bookmarkTemList);

@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.webbrowser.bigwhite.Model.data.bookmarkResponse;
-import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.R;
 
 import java.util.List;
@@ -23,6 +22,8 @@ public class bookmarkAdapter extends ArrayAdapter<bookmarkResponse.DataBean> {
         super(context, resource, objects);
         newResourceId = resource;
     }
+
+
 
     @NonNull
     @Override

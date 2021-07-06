@@ -96,9 +96,10 @@ public class bookmarkDao {
         Cursor cursor = bookmarkHelper.getReadableDatabase().rawQuery(queryStr, null);
 
         while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("Id"));
             String name = cursor.getString(cursor.getColumnIndexOrThrow("Name"));
             String address = cursor.getString(cursor.getColumnIndexOrThrow("Address"));
-            similarRecords.add(new bookmarkResponse.DataBean(name, address));
+            similarRecords.add(new bookmarkResponse.DataBean(id, name, address));
         }
 
         cursor.close();
@@ -137,7 +138,10 @@ public class bookmarkDao {
 
     public void clearThisMess(bookmarkResponse.DataBean historyData) {
         SQLiteDatabase db = bookmarkHelper.getWritableDatabase();
-        db.execSQL("delete from " + bookmarkHelper.TABLE_NAME_BOOKMARK + " where Address = " + "'" + historyData.getUrl() + "'" + ";");
+        db.execSQL("delete from " + bookmarkHelper.TABLE_NAME_BOOKMARK +
+                " where Address = " + "'" + historyData.getUrl() + "'" +
+                " and Id = " + "'" +historyData.getId() + "'" +
+                ";");
         db.close();
     }
 

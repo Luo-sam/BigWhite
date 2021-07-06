@@ -3,7 +3,6 @@ package com.webbrowser.bigwhite.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -15,6 +14,7 @@ import com.hb.dialog.myDialog.ActionSheetDialog;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.deleteThisHis;
 import com.webbrowser.bigwhite.Model.data.historyResponse;
+import com.webbrowser.bigwhite.Model.data.simpleResponse;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.historyBackAdapter;
 import com.webbrowser.bigwhite.utils.httpUtils;
@@ -49,9 +49,9 @@ public class history extends BaseActivity {
         history = new historyDao(this);
         SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
         String head = sp.getString("token", "");
+        String ifHistory = sp.getString("history","");
         ListView historyList = findViewById(R.id.history_list);
         temListBack = history.queryHistory();
-        showToast(temListBack.toString());
         reversedListBack();
         historyBackAdapter historyAdapter = new historyBackAdapter(history.this, R.layout.h_b_item, dataBack);
         historyList.setAdapter(historyAdapter);
@@ -68,30 +68,30 @@ public class history extends BaseActivity {
                     .addSheetItem("删除当前信息", null, which -> {
                         historyResponse.DataBean hs = dataBack.get(i);
                         history.clearThisMess(hs);
-
-                        String backAddress1 = "http://139.196.180.89:8137/api/v1/histories/"+hs.getId();
-                        showToast(backAddress1);
-                        httpUtils.deleteHis(backAddress1, head, new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                runOnUiThread(() -> showToast("获取历史记录网络错误"));
-                            }
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                /*得到的服务器返回值具体内容*/
-                                assert response.body() != null;
-                                final String responseData = response.body().string();
-                                runOnUiThread(() -> {
-                                    Gson gson = new Gson();
-                                    deleteThisHis responsePut = gson.fromJson(responseData, deleteThisHis.class);
-                                    if (responsePut.getState().getCode() == 0) {
-                                        showToast("删除成功"+hs.getId());
-                                    } else {
-                                        showToast("由后端更新历史记录失败");
-                                    }
-                                });
-                            }
-                        });
+                        if(ifHistory.equals("true")){
+                            String backAddress1 = "http://139.196.180.89:8137/api/v1/histories/"+hs.getId();
+                            httpUtils.delete(backAddress1, head, new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                                }
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    /*得到的服务器返回值具体内容*/
+                                    assert response.body() != null;
+                                    final String responseData = response.body().string();
+                                    runOnUiThread(() -> {
+                                        Gson gson = new Gson();
+                                        deleteThisHis responsePut = gson.fromJson(responseData, deleteThisHis.class);
+                                        if (responsePut.getState().getCode() == 0) {
+                                            showToast("删除成功");
+                                        } else {
+                                            showToast("由后端更新历史记录失败");
+                                        }
+                                    });
+                                }
+                            });
+                        }
                         initHistory();
                     }).addSheetItem("删除全部信息", null, whi -> {
                         AlertDialog.Builder clearSure = new AlertDialog.Builder(history.this);
@@ -99,23 +99,30 @@ public class history extends BaseActivity {
                                 (dialog1, which) -> {
                                     history.clearHistory();
                                     initHistory();
-                                    String backAddress1 = "http://139.196.180.89:8137/api/v1/histories";
-                                    showToast(backAddress1);
-                                    httpUtils.deleteHis(backAddress1, head, new Callback() {
-                                        @Override
-                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                            runOnUiThread(() -> showToast("获取历史记录网络错误"));
-                                        }
-                                        @Override
-                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                            /*得到的服务器返回值具体内容*/
-                                            assert response.body() != null;
-                                            final String responseData = response.body().string();
-                                            runOnUiThread(() -> Log.d("huis", responseData));
-                                        }
-                                    });
-
-
+                                    if(ifHistory.equals("true")){
+                                        String backAddress1 = "http://139.196.180.89:8137/api/v1/histories";
+                                        httpUtils.delete(backAddress1, head, new Callback() {
+                                            @Override
+                                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                runOnUiThread(() -> showToast("获取历史记录网络错误"));
+                                            }
+                                            @Override
+                                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                /*得到的服务器返回值具体内容*/
+                                                assert response.body() != null;
+                                                final String responseData = response.body().string();
+                                                runOnUiThread(() -> {
+                                                    Gson gson = new Gson();
+                                                    simpleResponse responsePut = gson.fromJson(responseData, simpleResponse.class);
+                                                    if (responsePut.getState().getCode() == 0) {
+                                                        showToast("删除成功");
+                                                    } else {
+                                                        showToast("由后端更新标签记录失败");
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
                                 });
 
                         clearSure.setNegativeButton("取消", (dialog1, which) -> dialog1.dismiss());

@@ -103,7 +103,7 @@ public class httpUtils {
         client.newCall(request).enqueue(callback);
     }
 
-    public static void deleteHis(String address,String head,okhttp3.Callback callback) {
+    public static void delete(String address,String head,okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(address)

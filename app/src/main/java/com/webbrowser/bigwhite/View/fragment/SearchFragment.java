@@ -45,7 +45,7 @@ import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.method.OnRcvScrollListener;
 import com.webbrowser.bigwhite.utils.method.infoIntercept;
 import com.webbrowser.bigwhite.utils.method.infoRead;
-import com.webbrowser.bigwhite.utils.method.saveHistoryToThis;
+import com.webbrowser.bigwhite.utils.method.saveInfoToThis;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -203,7 +203,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
             // 显示页面标题
             textUrl.setText(webView.getTitle());
             /*上传历史记录到本地和服务器*/
-            saveHistoryToThis.saveHistory(getContext(), textUrl, webView, mActivity, history);
+            saveInfoToThis.saveHistory(getContext(), textUrl, webView, mActivity, history);
             /*获取资讯详情*/
             infoRead.getData(view);
             /**

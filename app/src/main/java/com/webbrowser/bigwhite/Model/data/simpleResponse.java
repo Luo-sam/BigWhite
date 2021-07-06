@@ -3,7 +3,7 @@ package com.webbrowser.bigwhite.Model.data;
 
 import java.io.Serializable;
 
-public class register_res implements Serializable {
+public class simpleResponse implements Serializable {
 
 
     private StateDTO state;
