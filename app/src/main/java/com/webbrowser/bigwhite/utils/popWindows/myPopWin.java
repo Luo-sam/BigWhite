@@ -96,8 +96,8 @@ public class myPopWin extends PopupWindow {
         my.setVisibility(View.GONE);
     }
 
-    public ImageView getPersonal() {
-        return personal;
+    public ImageView getPerson() {
+        return person;
     }
 }
 

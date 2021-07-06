@@ -256,6 +256,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
         }
+        if(myPopWin.isShowing()){
+            showToast("111111");
+            myPopWin.dismiss();
+        }
         if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {
             sc.getIllegWebsite().setVisibility(View.GONE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
@@ -348,7 +352,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (id == R.id.exit) {
             saveToSp("token", "");
             myPopWin.change();
-        }else if(id==R.id.personal){
+        }else if(id==R.id.person){
             startActivity(new Intent(MainActivity.this, personalCenterActivity.class));
         }
     };
