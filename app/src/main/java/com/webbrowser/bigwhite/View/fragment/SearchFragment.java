@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,48 +21,36 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
+import com.dueeeke.videocontroller.StandardVideoController;
 import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.NewsData;
 import com.webbrowser.bigwhite.Model.data.VideoData;
-import com.webbrowser.bigwhite.Model.data.historyResponse;
-import com.webbrowser.bigwhite.Model.data.ilLegWebsite;
-import com.webbrowser.bigwhite.Model.data.responseData_put;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.newsAdapter;
 import com.webbrowser.bigwhite.View.adapter.searchHistoryAdapter;
 import com.webbrowser.bigwhite.View.myView.MingWebView;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
-import com.webbrowser.bigwhite.utils.OkHttpUtil;
-import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.utils.method.OnRcvScrollListener;
-import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
+import com.webbrowser.bigwhite.utils.method.infoIntercept;
+import com.webbrowser.bigwhite.utils.method.infoRead;
+import com.webbrowser.bigwhite.utils.method.saveHistoryToThis;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 public class SearchFragment extends BaseFragment implements View.OnKeyListener, View.OnClickListener, View.OnFocusChangeListener {
@@ -73,16 +59,13 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     private View view;
     private InputMethodManager manager;
     private FrameLayout web;
-    private LinearLayout searchHis;
     private List<String> data, temList;
     private RecordsDao sc;
     private ProgressBar progressBar;
     private EditText textUrl;
     private ImageView webIcon, btnStart;
-    private LinearLayout Liner_search, illegWebsite, linearLayout;
-    private TextView title, video, author;
-    /*上传用的token*/
-    private String token;
+    private LinearLayout Liner_search, illegWebsite, linearLayout, searchHis;
+    private TextView title, author;
     /*历史记录*/
     private historyDao history;
     private static final String HTTP = "http://";
@@ -93,8 +76,8 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
 
-
-
+    private VideoView videoView;
+    private StandardVideoController standardVideoController;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -128,15 +111,14 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     /*初始化得到的view*/
     @SuppressLint("CutPasteId")
     private void initView(View view) {
-        mainActivity=(MainActivity)getActivity();
-        video = view.findViewById(R.id.video);
+        videoView = view.findViewById(R.id.video);
+        mainActivity = (MainActivity) getActivity();
         linearLayout = view.findViewById(R.id.linearLayout);
         advisory = view.findViewById(R.id.advisory);
         advisory.setVisibility(View.GONE);
         illegWebsite = view.findViewById(R.id.illeg);
         illegWebsite.setVisibility(View.GONE);
         TextView textView = view.findViewById(R.id.goback);
-
         /*对两个页面的初始化*/
         Liner_search = view.findViewById(R.id.linearLayout);
         web = view.findViewById(R.id.web);
@@ -144,9 +126,6 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         title = view.findViewById(R.id.title);
         author = view.findViewById(R.id.author);
         recyclerView = view.findViewById(R.id.recyclerview);
-
-
-
         history = new historyDao(mActivity);
         /*键盘事件绑定*/
         manager = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -201,19 +180,9 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            String[] data;
-            data = ilLegWebsite.illegWebsite();
-            for (int i = 0; i < data.length; i++) {
-                if (url.equals(data[i])) {
-                    Toast.makeText(getActivity(), "非法网站", Toast.LENGTH_LONG).show();
-                    view.stopLoading();
-                    Liner_search.setVisibility(View.GONE);
-                    web.setVisibility(View.GONE);
-                    searchHis.setVisibility(View.GONE);
-                    illegWebsite.setVisibility(View.VISIBLE);
+            /*请求拦截*/
+            infoIntercept.getData(mActivity,view,url,Liner_search,web,searchHis,illegWebsite);
 
-                }
-            }
             super.onPageStarted(view, url, favicon);
             // 网页开始加载，显示进度条
             progressBar.setProgress(0);
@@ -233,98 +202,10 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
             mActivity.setTitle(webView.getTitle());
             // 显示页面标题
             textUrl.setText(webView.getTitle());
-
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                String name = textUrl.getText().toString().trim();
-                String address = webView.getUrl();
-                historyResponse.DataBean his = new historyResponse.DataBean(name, address);
-                /*添加到远程仓库*/
-                SharedPreferences sp = mActivity.getSharedPreferences("sp_list", MODE_PRIVATE);
-                String head = sp.getString("token", "");
-                if (!name.equals("百度一下")) {
-                    if (history.isHasRecord(his)) {
-                        history.clearThisMess(his);
-                    }
-
-                    /*添加到本地仓库*/
-                    history.addHistory(his);
-                    httpUtils.putHistory(head, "http://139.196.180.89:8137/api/v1/histories", name, address, new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            mActivity.runOnUiThread(() -> showToast("上传历史记录网络错误"));
-                        }
-
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                            /*得到的服务器返回值具体内容*/
-                            assert response.body() != null;
-                            final String responseData = response.body().string();
-                            Gson gson = new Gson();
-                            responseData_put responsePut = gson.fromJson(responseData, responseData_put.class);
-                            mActivity.runOnUiThread(() -> {
-                                if (responsePut.getState().getCode() == 0) {
-                                    showToast("上传历史记录成功");
-                                } else {
-                                    showToast("上传历史记录失败");
-                                }
-                            });
-                        }
-                    });
-
-                }
-            }, 2000);
-
-            /**
-             *@Author luo
-             *@Time 2021/7/5 15:12
-             *@Description 获取data信息
-             */
-
-            if (view.getUrl().contains("https://www.baidu.com/#iact=wiseindex%")) {
-                String viewUrl = view.getUrl();
-                String pattern = "news_(\\d+)%";
-
-                // 创建 Pattern 对象
-                Pattern r = Pattern.compile(pattern);
-                // 现在创建 matcher 对象
-                Matcher m = r.matcher(viewUrl);
-                if (m.find()) {
-                    String id = m.group(1);
-                    viewUrl = "https://mbd.baidu.com/newspage/data/landingpage?s_type=news&dsp=wise&context=%7B%22nid%22%3A%22news_" +
-                            id +
-                            "%22%7D&pageType=1&n_type=1&p_from=-1&quot";
-
-                    if (!CrawlPageUtil.newsMap.containsKey(viewUrl)) {
-                        String html = null;
-                        try {
-                            html = OkHttpUtil.OkGetArt(viewUrl);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        NewsData newsData = CrawlPageUtil.spiderNewsData(html, viewUrl);
-                        try {
-                            CrawlPageUtil.newsMap.put(viewUrl, (NewsData) newsData.clone());
-                        } catch (CloneNotSupportedException e) {
-                            e.printStackTrace();
-                        }
-                        CrawlPageUtil.currentNews = newsData;
-                    } else
-                        CrawlPageUtil.currentNews = CrawlPageUtil.newsMap.get(viewUrl);
-                } else {
-                    // 默认是视频
-                    String html = null;
-                    try {
-                        viewUrl = OkHttpUtil.getRealVideoUrl(viewUrl);
-                        html = OkHttpUtil.OkGetArt(viewUrl);
-                        CrawlPageUtil.videoData = CrawlPageUtil.spiderVideoUrl(html);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-
+            /*上传历史记录到本地和服务器*/
+            saveHistoryToThis.saveHistory(getContext(), textUrl, webView, mActivity, history);
+            /*获取资讯详情*/
+            infoRead.getData(view);
             /**
              *@Author luo
              *@Time 2021/7/5 15:11
@@ -332,12 +213,11 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
              */
             NewsData news = CrawlPageUtil.currentNews;
             VideoData videa = CrawlPageUtil.videoData;
-//            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
             newsAdapter newsAdapter = null;
             if (news != null || videa != null) {
                 if (news != null) {
                     recyclerView.setVisibility(View.VISIBLE);
-                    video.setVisibility(View.GONE);
+                    videoView.setVisibility(View.GONE);
                     title.setText(news.getTitle());
                     author.setText(news.getAuthor());
                     LinearLayoutManager manager = new LinearLayoutManager(mActivity);
@@ -363,11 +243,11 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                 if (videa != null) {
                     if (recyclerView.getAdapter() != null) {
                         recyclerView.setVisibility(View.GONE);
-                        video.setVisibility(View.VISIBLE);
+                        videoView.setVisibility(View.VISIBLE);
                     }
                     title.setText(CrawlPageUtil.videoData.getTitle());
                     author.setText(CrawlPageUtil.videoData.getAuthor());
-                    video.setText(CrawlPageUtil.videoData.getVideoUrl());
+
                     mainActivity.getWindows().setVisibility(View.GONE);
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
@@ -382,10 +262,8 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         }
     }
 
-
     private class MkWebChromeClient extends WebChromeClient {
         private final static int WEB_PROGRESS_MAX = 100;
-
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
@@ -399,23 +277,20 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                 }
             }
         }
-
         @Override
         public void onReceivedIcon(WebView view, Bitmap icon) {
             super.onReceivedIcon(view, icon);
             webIcon.setImageBitmap(icon);
         }
-
         @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             mActivity.setTitle(title);
             textUrl.setText(title);
-
-
         }
 
     }
+
 
     /*颠倒list顺序，用户输入的信息会从上依次往下显示*/
     private void reversedList() {
@@ -476,7 +351,11 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         super.onPause();
         try {
             webView.getClass().getMethod("onPause").invoke(webView);
+//            if (videoView != null) {
+//                videoView.pause();
+//            }
         } catch (Exception e) {
+
             e.printStackTrace();
         }
     }
@@ -486,9 +365,20 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         super.onResume();
         try {
             webView.getClass().getMethod("onResume").invoke(webView);
+//            if (videoView != null) {
+//                videoView.resume();
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        if (videoView != null) {
+//            videoView.release();
+//        }
     }
 
     @Override

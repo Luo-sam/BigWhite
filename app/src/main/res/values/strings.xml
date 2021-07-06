@@ -34,4 +34,5 @@
     <string name="yzm">请输入验证码</string>
     <string name="getYzm">获取验证码</string>
     <string name="myName">账号名</string>
+    <string name="noAuthor">未知</string>
 </resources>

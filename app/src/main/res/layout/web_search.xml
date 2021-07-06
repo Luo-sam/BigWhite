@@ -37,16 +37,14 @@
         <TextView   
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="未知"
+            android:text="@string/noAuthor"
             android:id="@+id/author"/>
     </LinearLayout>
-    <TextView
+    <VideoView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/blue"
-        android:textSize="20sp"
-        android:clickable="true"
         android:id="@+id/video"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,32 +1,27 @@
 package com.webbrowser.bigwhite;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.webkit.WebView;
-import android.webkit.WebViewFragment;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
+import com.dueeeke.videoplayer.player.VideoView;
 import com.google.gson.Gson;
 import com.hb.dialog.myDialog.MyAlertInputDialog;
 import com.webbrowser.bigwhite.Model.SQLite.WebPageHelper;
@@ -42,14 +37,11 @@ import com.webbrowser.bigwhite.activity.bookmark;
 import com.webbrowser.bigwhite.activity.chooseLoginRegister;
 import com.webbrowser.bigwhite.activity.history;
 import com.webbrowser.bigwhite.activity.login;
+import com.webbrowser.bigwhite.activity.personalCenterActivity;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
-import com.webbrowser.bigwhite.activity.personalCenterActivity;
-import com.webbrowser.bigwhite.utils.CrawlPageUtil;
-//import com.webbrowser.bigwhite.utils.WebPageHelper;
 
-import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +50,11 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+//import com.webbrowser.bigwhite.utils.WebPageHelper;
+
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*log的标签*/
-//    private static final String TAG = "main";
     /*保存Token值*/
     private String Token;
 
@@ -78,7 +71,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private MyViewPager viewPager;
     public List<Fragment> fragments;
     private SearchFragment sc;
-    private  LinearLayout windows;
+    private  LinearLayout windows,videoView;
 
 
     /*点击返回键调用*/
@@ -104,7 +97,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        list_file = bookmarkDao.queryFilename();
+    }
+
     private void initView() {
+
         /*添加标签文件夹*/
         TextView add_file = findViewById(R.id.add_file);
         list_file = new ArrayList<>();
@@ -147,6 +147,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Fragment fragment = new SearchFragment();
         this.fragments.add(fragment);
         WebPageHelper.webpagelist = this.fragments;
+
+
+
+
 //        ((ViewGroup) viewPager.getParent()).setOnTouchListener(new View.OnTouchListener() {
 //            protected float point_x, point_y; //手指按下的位置
 //            private int left, right, bottom;

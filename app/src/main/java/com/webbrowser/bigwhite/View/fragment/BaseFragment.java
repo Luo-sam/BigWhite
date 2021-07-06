@@ -86,4 +86,5 @@ public abstract class BaseFragment extends Fragment {
         Toast.makeText(getContext(), str, Toast.LENGTH_SHORT).show();
     }
 
+
 }
