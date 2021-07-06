@@ -32,58 +32,26 @@ public class history extends BaseActivity {
     private List<historyResponse.DataBean> dataBack;
     private List<historyResponse.DataBean> temListBack;
     private historyDao history;
-    private ListView historyList;
     private String head;
+
+    public history() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history);
-        initHistoryFromBack();
         initHistory();
     }
 
-
-    public void initHistoryFromBack() {
+    public void initHistory() {
         dataBack = new ArrayList<>();
-        historyList = findViewById(R.id.history_list);
-        /*初始化list中history的属性*/
         history = new historyDao(this);
         SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
-        head = sp.getString("token", "");
-        if (!head.equals("")) {
-            String backAddress = "http://139.196.180.89:8137/api/v1/histories";
-            httpUtils.getHistoryFromBack(backAddress, head, new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    runOnUiThread(() -> showToast("获取历史记录网络错误"));
-                }
-
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    /*得到的服务器返回值具体内容*/
-                    assert response.body() != null;
-                    final String responseData = response.body().string();
-                    runOnUiThread(() -> {
-                        Gson gson = new Gson();
-                        historyResponse responsePut = gson.fromJson(responseData, historyResponse.class);
-                        if (responsePut.getState().getCode() == 0) {
-                            temListBack = responsePut.getData();
-                            history.clearHistory();
-                            history.addHistoryFromBack(temListBack);
-                            showToast("更新历史记录成功");
-                        } else {
-                            showToast("由后端更新历史记录失败");
-                        }
-
-                    });
-
-                }
-            });
-        }
-    }
-    public void initHistory() {
+        String head = sp.getString("token", "");
+        ListView historyList = findViewById(R.id.history_list);
         temListBack = history.queryHistory();
+        showToast(temListBack.toString());
         reversedListBack();
         historyBackAdapter historyAdapter = new historyBackAdapter(history.this, R.layout.h_b_item, dataBack);
         historyList.setAdapter(historyAdapter);

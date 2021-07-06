@@ -70,8 +70,8 @@ public class historyDao {
             for (historyResponse.DataBean data : historyData) {
                 contentValues.put("Name", data.getTitle());
                 contentValues.put("Address", data.getUrl());
+                db.insertOrThrow(historyHelper.TABLE_NAME_HISTORY, null, contentValues);
             }
-            db.insertOrThrow(historyHelper.TABLE_NAME_HISTORY, null, contentValues);
         } catch (Exception e) {
             Log.e(TAG, "add error", e);
         } finally {
@@ -89,10 +89,9 @@ public class historyDao {
         @SuppressLint("Recycle") Cursor cursor = db.query(historyHelper.TABLE_NAME_HISTORY, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt((cursor.getColumnIndex("Id")));
                 String name = cursor.getString((cursor.getColumnIndex("Name")));
                 String address = cursor.getString((cursor.getColumnIndex("Address")));
-                list.add(new historyResponse.DataBean(name, address, id));
+                list.add(new historyResponse.DataBean(name, address));
             } while (cursor.moveToNext());
         }
         return list;
@@ -100,8 +99,7 @@ public class historyDao {
 
     public void clearThisMess(historyResponse.DataBean historyData) {
         SQLiteDatabase db = historyHelper.getWritableDatabase();
-        db.execSQL("delete from " + historyHelper.TABLE_NAME_HISTORY + " where Name = " + "'" + historyData.getTitle() + "'" +
-                " and Address = " + "'" + historyData.getUrl() + "'" + ";");
+        db.execSQL("delete from " + historyHelper.TABLE_NAME_HISTORY + " where Address = " + "'" + historyData.getUrl() + "'" + ";");
         db.close();
     }
 

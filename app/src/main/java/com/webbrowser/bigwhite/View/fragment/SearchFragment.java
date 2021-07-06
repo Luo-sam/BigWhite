@@ -228,21 +228,18 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
             Handler handler = new Handler();
             handler.postDelayed(() -> {
                 String name = textUrl.getText().toString().trim();
-                showToast(name);
                 String address = webView.getUrl();
                 historyResponse.DataBean his = new historyResponse.DataBean(name, address);
                 /*添加到远程仓库*/
                 SharedPreferences sp = mActivity.getSharedPreferences("sp_list", MODE_PRIVATE);
                 String head = sp.getString("token", "");
                 if (!name.equals("百度一下")) {
-                    showToast("开始上传");
                     if (history.isHasRecord(his)) {
                         history.clearThisMess(his);
                     }
 
                     /*添加到本地仓库*/
                     history.addHistory(his);
-
                     httpUtils.putHistory(head, "http://139.196.180.89:8137/api/v1/histories", name, address, new Callback() {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {

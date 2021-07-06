@@ -53,7 +53,6 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-//import com.hb.dialog.myDialog.MyAlertInputDialog;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*log的标签*/
@@ -283,10 +282,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
             String head = sp.getString("token", "");
 
-            bookmarkDao.addBookmark(new historyData(name, url,"1"), fileName);
+            bookmarkDao.addBookmark(new historyData(name, url), fileName);
             httpUtils.putBookMark(head, "http://139.196.180.89:8137/api/v1/collections", fileName, name, url, new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(@NonNull Call call , @NonNull IOException e) {
                     runOnUiThread(() -> showToast("上传标签网络错误"));
                 }
                 @Override

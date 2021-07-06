@@ -6,7 +6,12 @@ public class historyData {
     private String name;
     private String address;
 
-    public historyData(String id, String name, String address) {
+    public historyData(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public historyData(String name, String address, String id) {
         this.id = id;
         this.name = name;
         this.address = address;
