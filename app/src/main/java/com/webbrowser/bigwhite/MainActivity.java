@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +45,11 @@ import com.webbrowser.bigwhite.activity.login;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
+import com.webbrowser.bigwhite.activity.personalCenterActivity;
+import com.webbrowser.bigwhite.utils.CrawlPageUtil;
+//import com.webbrowser.bigwhite.utils.WebPageHelper;
 
+import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +78,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private MyViewPager viewPager;
     public List<Fragment> fragments;
     private SearchFragment sc;
+    private  LinearLayout windows;
 
 
     /*点击返回键调用*/
@@ -81,6 +87,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     /*主页初始layoutParams*/
     ViewGroup.LayoutParams mylayoutParams;
+
+    public LinearLayout getWindows() {
+        return windows;
+    }
 
     /*onCreate方法*/
     @Override
@@ -100,6 +110,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         list_file = new ArrayList<>();
         bookmarkDao = new bookmarkDao(MainActivity.this);
         list_file = bookmarkDao.queryFilename();
+        windows=findViewById(R.id.windows);
 
         /*添加标签*/
         select_list = findViewById(R.id.select_list);
@@ -136,47 +147,47 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Fragment fragment = new SearchFragment();
         this.fragments.add(fragment);
         WebPageHelper.webpagelist = this.fragments;
-        ((ViewGroup) viewPager.getParent()).setOnTouchListener(new View.OnTouchListener() {
-            protected float point_x, point_y; //手指按下的位置
-            private int left, right, bottom;
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        WebViewFragment webViewFragment;
-                        point_x = event.getRawX();
-                        point_y = event.getRawY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        float mov_x = event.getRawX() - point_x;
-                        float mov_y = event.getRawY() - point_y;
-                        Log.d("trr", "mov_y" + mov_y);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        break;
+//        ((ViewGroup) viewPager.getParent()).setOnTouchListener(new View.OnTouchListener() {
+//            protected float point_x, point_y; //手指按下的位置
+//            private int left, right, bottom;
+//            @SuppressLint("ClickableViewAccessibility")
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        WebViewFragment webViewFragment;
+//                        point_x = event.getRawX();
+//                        point_y = event.getRawY();
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        float mov_x = event.getRawX() - point_x;
+//                        float mov_y = event.getRawY() - point_y;
+//                        Log.d("trr", "mov_y" + mov_y);
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        break;
+//
+//                }
+//                return viewPager.dispatchTouchEvent(event);
+//            }
+//        });
 
-                }
-                return viewPager.dispatchTouchEvent(event);
-            }
-        });
-
-        viewPager.setOffscreenPageLimit(5);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d("MotionEvent_pageScro", "" + position);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        viewPager.setOffscreenPageLimit(8);
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                Log.d("MotionEvent_pageScro", "" + position);
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
         viewPager.setAdapter(new SectionsPageAdapter(getSupportFragmentManager(), this.fragments));
         //保存主页初始宽度
         mylayoutParams = viewPager.getLayoutParams();
@@ -190,6 +201,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (id == R.id.backLeft) {
             sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
             if (sc.getAdvisory().getVisibility() == View.VISIBLE) {
+                windows.setVisibility(View.VISIBLE);
                 sc.getAdvisory().setVisibility(View.GONE);
                 sc.getLiner_search().setVisibility(View.VISIBLE);
                 sc.getWeb().setVisibility(View.VISIBLE);
@@ -239,9 +251,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //返回上一页
         sc = (SearchFragment) fragments.get(viewPager.getCurrentItem());
         if (sc.getAdvisory().getVisibility() == View.VISIBLE) {
+            windows.setVisibility(View.VISIBLE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
         }
+
         if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {
             sc.getIllegWebsite().setVisibility(View.GONE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
@@ -334,6 +348,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (id == R.id.exit) {
             saveToSp("token", "");
             myPopWin.change();
+        }else if(id==R.id.person){
+            startActivity(new Intent(MainActivity.this, personalCenterActivity.class));
         }
     };
 
@@ -395,7 +411,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void scaleWindow() {
 
         /** 设置缩放动画 */
-        final ScaleAnimation animation = new ScaleAnimation(1f, 1f, 1f, 0.75f,
+        final ScaleAnimation animation = new ScaleAnimation(1f, 0.8f, 1f, 0.75f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);// 从相对于自身0.5倍的位置开始缩放，也就是从控件的位置缩放
         animation.setDuration(200);//设置动画持续时间
 
@@ -452,7 +468,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void enlargeWindow() {
 
         /** 设置缩放动画 */
-        final ScaleAnimation animation = new ScaleAnimation(1f, 1f, 0.75f, 1f,
+        final ScaleAnimation animation = new ScaleAnimation(0.8f, 1f, 0.75f, 1f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);// 从相对于自身0.5倍的位置开始缩放，也就是从控件的位置缩放
         animation.setDuration(200);//设置动画持续时间
 
@@ -487,4 +503,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         viewPager.setClipChildren(true);
         viewPager.setFullScreen(true);
     }
+
 }

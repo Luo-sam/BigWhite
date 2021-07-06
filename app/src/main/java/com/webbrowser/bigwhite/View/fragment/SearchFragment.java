@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
 import com.webbrowser.bigwhite.Model.data.NewsData;
@@ -48,6 +50,7 @@ import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.OkHttpUtil;
 import com.webbrowser.bigwhite.utils.httpUtils;
 import com.webbrowser.bigwhite.utils.method.OnRcvScrollListener;
+import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -87,6 +90,9 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
 
     private Activity mActivity;
     private LinearLayout advisory;
+    private RecyclerView recyclerView;
+    private MainActivity mainActivity;
+
 
 
     @Nullable
@@ -122,6 +128,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     /*初始化得到的view*/
     @SuppressLint("CutPasteId")
     private void initView(View view) {
+        mainActivity=(MainActivity)getActivity();
         video = view.findViewById(R.id.video);
         linearLayout = view.findViewById(R.id.linearLayout);
         advisory = view.findViewById(R.id.advisory);
@@ -136,6 +143,8 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         searchHis = view.findViewById(R.id.search_his);
         title = view.findViewById(R.id.title);
         author = view.findViewById(R.id.author);
+        recyclerView = view.findViewById(R.id.recyclerview);
+
 
 
         history = new historyDao(mActivity);
@@ -323,7 +332,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
              */
             NewsData news = CrawlPageUtil.currentNews;
             VideoData videa = CrawlPageUtil.videoData;
-            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
+//            RecyclerView recyclerView = mActivity.findViewById(R.id.recyclerview);
             newsAdapter newsAdapter = null;
             if (news != null || videa != null) {
                 if (news != null) {
@@ -343,7 +352,8 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                     recyclerView.setItemAnimator(null);
                     /*设置动态更新recyclerView*/
                     recyclerView.setOnScrollListener(new OnRcvScrollListener());
-                    recyclerView.setItemViewCacheSize(30);
+                    recyclerView.setItemViewCacheSize(50);
+                    mainActivity.getWindows().setVisibility(View.GONE);
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);
@@ -358,6 +368,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                     title.setText(CrawlPageUtil.videoData.getTitle());
                     author.setText(CrawlPageUtil.videoData.getAuthor());
                     video.setText(CrawlPageUtil.videoData.getVideoUrl());
+                    mainActivity.getWindows().setVisibility(View.GONE);
                     illegWebsite.setVisibility(View.GONE);
                     searchHis.setVisibility(View.GONE);
                     linearLayout.setVisibility(View.GONE);

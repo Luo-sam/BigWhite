@@ -1,11 +1,13 @@
 package com.webbrowser.bigwhite.View.myView;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.webkit.WebView;
+
 
 public class MingWebView extends WebView implements GestureDetector.OnGestureListener{
     private float mFirstY;
@@ -17,7 +19,7 @@ public class MingWebView extends WebView implements GestureDetector.OnGestureLis
     }
 
     public MingWebView(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet,0);
+        this(context, attributeSet, Resources.getSystem().getIdentifier("webViewStyle","attr","android"));
     }
 
     public MingWebView(Context context, AttributeSet attributeSet, int i) {

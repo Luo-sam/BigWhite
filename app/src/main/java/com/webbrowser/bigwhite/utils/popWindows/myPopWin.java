@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -19,6 +20,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class myPopWin extends PopupWindow {
 
     private final View view;
+    private ImageView person;
     Button login;
     LinearLayout my;
     TextView myName;
@@ -27,6 +29,7 @@ public class myPopWin extends PopupWindow {
     public myPopWin(Context mContext, View.OnClickListener itemsOnClick) {
 
         this.view = LayoutInflater.from(mContext).inflate(R.layout.my_pop, null);
+        person=view.findViewById(R.id.person);
 
         Button exit;
         LinearLayout layout, addBookmark, bookMark, history;
@@ -39,6 +42,7 @@ public class myPopWin extends PopupWindow {
         my = view.findViewById(R.id.my);
         myName = view.findViewById(R.id.myName);
         // 设置按钮监听
+        person.setOnClickListener(itemsOnClick);
         login.setOnClickListener(itemsOnClick);
         addBookmark.setOnClickListener(itemsOnClick);
         bookMark.setOnClickListener(itemsOnClick);
@@ -90,6 +94,10 @@ public class myPopWin extends PopupWindow {
 
         login.setVisibility(View.VISIBLE);
         my.setVisibility(View.GONE);
+    }
+
+    public ImageView getPerson() {
+        return person;
     }
 }
 

@@ -46,15 +46,38 @@ public class CrawlPageUtil {
         for (Element element1 : div) {
             try {
                 if(element1.attr("class").contains("contentMedia")){
-                    String s = element1.select("div").select("div[class~=^contentImg]").select("div")
-                            .select("img").attr("src");
-                    imageList.add(s);
-                    textList.add(s);
+                    String s = null;
+                    if(element1.select("div").select("div[class~=^contentImg]").size()!=0) {
+                        s = element1.select("div").select("div[class~=^contentImg]").select("div")
+                                .select("img").attr("src");
+                    }
+                    else if(element1.select("div").select("div[class~=^shareContentImg]").size()!=0){
+                        s = element1.select("div").select("div[class~=^shareContentImg]").select("div")
+                                .select("img").attr("src");
+                    }
+                    if(s!=null) {
+                        imageList.add(s);
+                        textList.add(s);
+                    }
                 } else if(element1.attr("class").contains("contentText")){
-                    if(element1.select("span") != null)
+                    if(element1.select("span").size() != 0)
                         textList.add(element1.select("span").get(0).text());
-                    else if(element1.select("p") != null)
+                    else if(element1.select("p").size() != 0)
                         textList.add(element1.select("p").get(0).text());
+                    else if(element1.select("article").size() != 0){
+                        Element article = element1.select("article").get(0);
+                        Elements elements = article.getAllElements();
+                        for (Element element2 : elements) {
+                            if(element2.select("p").size() != 0){
+                                textList.add(element2.select("p").get(0).text());
+                            }
+                            else if(element2.select("div").size()!=0){
+                                if(element2.select("div").select("span").size()!=0&&
+                                        element2.select("div").select("span").select("img").size()!=0)
+                                    textList.add(element2.select("div").select("span").select("img").attr("src"));
+                            }
+                        }
+                    }
                 }
             } catch (Exception ignored) {
             }

@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/blue"
         android:textSize="20sp"
+        android:clickable="true"
         android:id="@+id/video"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

@@ -39,9 +39,12 @@
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".activity.chooseLoginRegister" android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".activity.personalCenterActivity" android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".activity.VideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout"
             android:screenOrientation="portrait">
+
         </activity>
 
 
