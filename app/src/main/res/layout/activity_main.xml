@@ -54,8 +54,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:contentDescription="@string/back"
                 android:onClick="list_back"
                 android:src="@drawable/left"

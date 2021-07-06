@@ -15,7 +15,9 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.webbrowser.bigwhite.MainActivity;
+import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
+import com.webbrowser.bigwhite.Model.data.bookmarkResponse;
 import com.webbrowser.bigwhite.Model.data.historyResponse;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.utils.editTextUtils;
@@ -34,6 +36,7 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
     private InputMethodManager manager;
     private EditText acc,key;
     private List<historyResponse.DataBean> temListBack;
+    private List<bookmarkResponse.DataBean> bookmarkTemList;
     public static final String RESULT = "result";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,7 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
             handler.postDelayed(() -> {
                 /*初始化list中history的属性*/
                 historyDao history = new historyDao(this);
+                bookmarkDao bookmarkDao = new bookmarkDao(this);
                 SharedPreferences sp = getSharedPreferences("sp_list", MODE_PRIVATE);
                 String head = sp.getString("token", "");
                 if (!head.equals("")) {
@@ -127,10 +131,8 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
 
                                 if (responsePut.getState().getCode() == 0) {
                                     temListBack = responsePut.getData();
-                                    showToast(temListBack.toString());
                                     history.clearHistory();
                                     history.addHistoryFromBack(temListBack);
-                                    showToast("更新历史记录成功");
                                 } else {
                                     showToast("由后端更新历史记录失败");
                                 }
@@ -155,28 +157,26 @@ public class login extends BaseActivity implements View.OnClickListener, View.On
                             final String responseData = response.body().string();
                             runOnUiThread(() -> {
                                 Log.d("hssss",responseData);
-//                                Gson gson = new Gson();
-//                                historyResponse responsePut = gson.fromJson(responseData, historyResponse.class);
-//
-//                                if (responsePut.getState().getCode() == 0) {
-//                                    temListBack = responsePut.getData();
-//                                    showToast(temListBack.toString());
-//                                    for (historyResponse.DataBean data:temListBack) {
-//                                        Log.d("hssss", data.getTitle());
-//                                    }
-//                                    history.clearHistory();
-//                                    history.addHistoryFromBack(temListBack);
-//                                    showToast("更新历史记录成功");
-//                                } else {
-//                                    showToast("由后端更新历史记录失败");
-//                                }
+                                Gson gson = new Gson();
+                                bookmarkResponse responsePut = gson.fromJson(responseData, bookmarkResponse.class);
+                                if (responsePut.getState().getCode() == 0) {
+                                    bookmarkTemList = responsePut.getData();
+                                    for (bookmarkResponse.DataBean data:bookmarkTemList) {
+                                        Log.d("hssss", data.getTitle());
+                                    }
+                                    bookmarkDao.clearBookmark();
+                                    bookmarkDao.addBookmarkFromBack(bookmarkTemList);
+                                    showToast("更新书签记录成功");
+                                } else {
+                                    showToast("由后端更新书签记录失败");
+                                }
 
                             });
 
                         }
                     });
                 }
-            }, 4000);
+            }, 2000);
         }
 
     }

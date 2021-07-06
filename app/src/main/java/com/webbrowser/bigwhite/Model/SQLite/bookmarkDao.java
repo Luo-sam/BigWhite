@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.webbrowser.bigwhite.Model.data.bookmarkResponse;
 import com.webbrowser.bigwhite.Model.data.historyData;
 
 import java.util.ArrayList;
@@ -16,8 +17,6 @@ import java.util.List;
 public class bookmarkDao {
 
     private static final String TAG = "SQL_Bookmark";
-    /*列定义*/
-    private final String[] HISTORY_COLUMNS = new String[]{"fileName", "Name", "Age"};
     private final bookmarkHelper bookmarkHelper;
     private final Context mContext;
 
@@ -52,6 +51,29 @@ public class bookmarkDao {
         }
     }
 
+    /*添加记录*/
+    public void addBookmarkFromBack(List<bookmarkResponse.DataBean> bookmarkData) {
+        SQLiteDatabase db = null;
+        try {
+            db = bookmarkHelper.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            for (bookmarkResponse.DataBean data : bookmarkData) {
+                contentValues.put("Id", data.getId());
+                contentValues.put("fileName", data.getTag());
+                contentValues.put("Name", data.getTitle());
+                contentValues.put("Address", data.getUrl());
+                db.insertOrThrow(bookmarkHelper.TABLE_NAME_BOOKMARK, null, contentValues);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "从后端添加标签错误", e);
+        } finally {
+            if (db != null && db.inTransaction()) {
+                db.endTransaction();
+                db.close();
+            }
+        }
+    }
+
     /*得到所有标签记录*/
     public List<historyData> queryBookmark() {
         SQLiteDatabase db = bookmarkHelper.getWritableDatabase();
@@ -61,22 +83,22 @@ public class bookmarkDao {
             do {
                 String name = cursor.getString((cursor.getColumnIndex("Name")));
                 String address = cursor.getString((cursor.getColumnIndex("Address")));
-                list.add(new historyData(name, address,"1"));
+                list.add(new historyData(name, address));
             } while (cursor.moveToNext());
         }
         return list;
     }
 
     /*根据名称得到需要的记录*/
-    public List<historyData> querySimilarRecord(String record) {
+    public List<bookmarkResponse.DataBean> querySimilarRecord(String record) {
         String queryStr = "select * from " + bookmarkHelper.TABLE_NAME_BOOKMARK + " where fileName = " + "'" + record + "'; ";
-        List<historyData> similarRecords = new ArrayList<>();
+        List<bookmarkResponse.DataBean> similarRecords = new ArrayList<>();
         Cursor cursor = bookmarkHelper.getReadableDatabase().rawQuery(queryStr, null);
 
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow("Name"));
             String address = cursor.getString(cursor.getColumnIndexOrThrow("Address"));
-            similarRecords.add(new historyData(name, address,"1"));
+            similarRecords.add(new bookmarkResponse.DataBean(name, address));
         }
 
         cursor.close();
@@ -113,10 +135,9 @@ public class bookmarkDao {
         db.close();
     }
 
-    public void clearThisMess(historyData historyData) {
+    public void clearThisMess(bookmarkResponse.DataBean historyData) {
         SQLiteDatabase db = bookmarkHelper.getWritableDatabase();
-        db.execSQL("delete from " + bookmarkHelper.TABLE_NAME_BOOKMARK + " where Name = " + "'" + historyData.getName() + "'" +
-                " and Address = " + "'" + historyData.getAddress() + "'" + ";");
+        db.execSQL("delete from " + bookmarkHelper.TABLE_NAME_BOOKMARK + " where Address = " + "'" + historyData.getUrl() + "'" + ";");
         db.close();
     }
 

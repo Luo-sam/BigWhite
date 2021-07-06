@@ -1,4 +1,4 @@
-package com.webbrowser.bigwhite;
+package com.webbrowser.bigwhite.utils.method;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Context;
 import com.dueeeke.videoplayer.ijk.IjkPlayerFactory;
 import com.dueeeke.videoplayer.player.VideoViewConfig;
 import com.dueeeke.videoplayer.player.VideoViewManager;
+import com.webbrowser.bigwhite.BuildConfig;
 
 public class MyApplication extends Application {
     private static Context context;

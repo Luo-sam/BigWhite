@@ -21,7 +21,7 @@ public class bookmarkHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql_history =   "create table if not exists " + TABLE_NAME_BOOKMARK +
-                " ( fileName char(20), Name char(20), Address char(20));";
+                " (Id Integer, fileName char(20), Name char(20), Address char(20));";
         db.execSQL(sql_history);
     }
 

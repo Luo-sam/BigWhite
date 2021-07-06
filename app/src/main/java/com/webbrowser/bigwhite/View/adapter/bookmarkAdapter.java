@@ -11,14 +11,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.webbrowser.bigwhite.Model.data.bookmarkResponse;
 import com.webbrowser.bigwhite.Model.data.historyData;
 import com.webbrowser.bigwhite.R;
 
 import java.util.List;
 
-public class bookmarkAdapter extends ArrayAdapter<historyData> {
+public class bookmarkAdapter extends ArrayAdapter<bookmarkResponse.DataBean> {
     private final int newResourceId;
-    public bookmarkAdapter(@NonNull Context context, int resource, @NonNull List<historyData> objects) {
+    public bookmarkAdapter(@NonNull Context context, int resource, @NonNull List<bookmarkResponse.DataBean> objects) {
         super(context, resource, objects);
         newResourceId = resource;
     }
@@ -26,12 +27,12 @@ public class bookmarkAdapter extends ArrayAdapter<historyData> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        historyData historyData = getItem(position);
+        bookmarkResponse.DataBean bookmarkData = getItem(position);
         @SuppressLint("ViewHolder") View view = LayoutInflater.from(getContext()).inflate(newResourceId,parent,false);
         TextView name = view.findViewById(R.id.internet_name);
         TextView address = view.findViewById(R.id.internet_address);
-        address.setText(historyData.getAddress());
-        name.setText(historyData.getName());
+        address.setText(bookmarkData.getUrl());
+        name.setText(bookmarkData.getTitle());
         return view;
     }
 }

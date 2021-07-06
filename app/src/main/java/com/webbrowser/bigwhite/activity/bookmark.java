@@ -4,16 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.hb.dialog.myDialog.ActionSheetDialog;
 import com.webbrowser.bigwhite.Model.SQLite.bookmarkDao;
-import com.webbrowser.bigwhite.Model.data.historyData;
+import com.webbrowser.bigwhite.Model.data.bookmarkResponse;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.View.adapter.bookmarkAdapter;
 import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
@@ -21,9 +17,9 @@ import com.webbrowser.bigwhite.View.adapter.bookmarkFileAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class bookmark extends AppCompatActivity {
-    private List<historyData> data;
-    private List<historyData> temList;
+public class bookmark extends BaseActivity {
+    private List<bookmarkResponse.DataBean> data;
+    private List<bookmarkResponse.DataBean> temList;
     private List<String> list_file;
     private bookmarkDao bookmark;
 
@@ -38,6 +34,9 @@ public class bookmark extends AppCompatActivity {
         setContentView(R.layout.bookmark);
         initFile();
     }
+
+
+
     public void initFile(){
         files = findViewById(R.id.file_layout);
         bookmark_list = findViewById(R.id.bookmark_layout);
@@ -68,24 +67,21 @@ public class bookmark extends AppCompatActivity {
         ListView bookmarkList = findViewById(R.id.bookmark_list);
         bookmarkList.setAdapter(historyAdapter);
 
-        bookmarkList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String address = data.get(position).getAddress();
-                Intent intent = new Intent();
-                intent.putExtra("address",address);
-                bookmark.this.setResult(123,intent);
-                bookmark.this.finish();
-            }
+        bookmarkList.setOnItemClickListener((parent, view, position, id) -> {
+            String address = data.get(position).getUrl();
+            Intent intent = new Intent();
+            intent.putExtra("address",address);
+            bookmark.this.setResult(123,intent);
+            bookmark.this.finish();
         });
 
         bookmarkList.setOnItemLongClickListener((adapterView, view, i, l) -> {
             ActionSheetDialog dialog = new ActionSheetDialog(bookmark.this).builder().setTitle("请选择")
                     .addSheetItem("删除当前信息", null, which -> {
-                        historyData hs = data.get(i);
+                        bookmarkResponse.DataBean hs = data.get(i);
                         bookmark.clearThisMess(hs);
                         initBookmarkArray();
-                        Log.d("clear", hs.getName());
+                        showToast(hs.getUrl());
                     }).addSheetItem("删除当前文件夹", null, which -> {
                         bookmark.clearThisFile(fileName);
                         bookmark_list.setVisibility(View.GONE);
@@ -98,22 +94,6 @@ public class bookmark extends AppCompatActivity {
 
     }
 
-
-    public void clearBookmark(View view) {
-        AlertDialog.Builder clearSure = new AlertDialog.Builder(bookmark.this);
-        clearSure.setPositiveButton("确认",
-                (dialog, which) -> {
-                    bookmark.clearBookmark();
-                    bookmark_list.setVisibility(View.GONE);
-                    files.setVisibility(View.VISIBLE);
-                    initFile();
-                });
-
-        clearSure.setNegativeButton("取消",(dialog, which) -> dialog.dismiss());
-        clearSure.setTitle("提示");
-        clearSure.setMessage("您确认清空搜索历史吗");
-        clearSure.show();
-    }
     public void back(View view) {
         if (bookmark_list.getVisibility() == View.VISIBLE) {
             bookmark_list.setVisibility(View.GONE);
@@ -128,5 +108,11 @@ public class bookmark extends AppCompatActivity {
         for(int i = temList.size() - 1 ; i >= 0 ; i --) {
             data.add(temList.get(i));
         }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
     }
 }
