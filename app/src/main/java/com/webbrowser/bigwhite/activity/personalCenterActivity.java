@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.webbrowser.bigwhite.R;
@@ -13,7 +14,10 @@ public class personalCenterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String name = getIntent().getStringExtra("Name");
         setContentView(R.layout.personal_center);
+        TextView showName = findViewById(R.id.name);
+        showName.setText(name);
         Switch switchBookmark = findViewById(R.id.sync_Bookmark);
         Switch switchHistory = findViewById(R.id.sync_History);
         boolean bookmark = Boolean.parseBoolean(getStringFromSp("bookmark"));

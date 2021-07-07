@@ -448,6 +448,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
             illegWebsite.setVisibility(View.GONE);
             Liner_search.setVisibility(View.VISIBLE);
             web.setVisibility(View.VISIBLE);
+            webView.goBack();
         }
         if (id == R.id.btnStart) {
             if (textUrl.hasFocus()) {

@@ -114,8 +114,11 @@ public class bookmark extends BaseActivity {
                             });
                         }
                         initBookmarkArray();
-                        showToast(String.valueOf(bookmarkAdapter.getCount()));
                         if (bookmarkAdapter.getCount() == 1) {
+                            list_file = bookmark.queryFilename();
+                            bookmarkFileAdapter myFilesAdapter = new bookmarkFileAdapter(bookmark.this,list_file);
+                            ListView fileList = findViewById(R.id.bookmark_files_list);
+                            fileList.setAdapter(myFilesAdapter);
                             bookmark_list.setVisibility(View.GONE);
                             files.setVisibility(View.VISIBLE);
                         }

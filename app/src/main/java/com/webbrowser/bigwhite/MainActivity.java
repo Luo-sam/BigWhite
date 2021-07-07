@@ -162,6 +162,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 sc.getWeb().setVisibility(View.VISIBLE);
             }
             if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {
+                sc.getIllegWebsite().setVisibility(View.GONE);
+                sc.getLiner_search().setVisibility(View.VISIBLE);
+                sc.getWeb().setVisibility(View.VISIBLE);
                 sc.getWebView().goBack();
             }
             if (sc.getSearchHis().getVisibility() == View.VISIBLE) {
@@ -280,7 +283,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             saveToSp("token", "");
             myPopWin.change();
         }else if(id==R.id.person){
-            startActivity(new Intent(MainActivity.this, personalCenterActivity.class));
+            Intent intent = new Intent(MainActivity.this, personalCenterActivity.class);
+            String name = getStringFromSp("Name");
+            intent.putExtra("Name",name);
+            startActivity(intent);
         }
     };
 
@@ -323,13 +329,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         //设置页间距
         viewPager.setPageMargin(40);
-//        //设置页面左右间距
-//        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-//        WindowManager wm = (WindowManager) this
-//                .getSystemService(Context.WINDOW_SERVICE);
-//        int width = wm.getDefaultDisplay().getWidth();
-//        layoutParams.width = width - 120;
-//        viewPager.setLayoutParams(layoutParams);
 
         viewPager.setClipChildren(false);
 
@@ -385,16 +384,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //设置背景颜色为白色
         RelativeLayout mainLayout = findViewById(R.id.main_activity);
         mainLayout.setBackgroundColor(0xF4F2F2);
-
-//        //设置页间距
-//        viewPager.setPageMargin(pageMargin);
-//        Log.d("margin", ""+pageMargin);
-////        //设置页面左右间距
-//        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-//        WindowManager wm = (WindowManager) this
-//                .getSystemService(Context.WINDOW_SERVICE);
-//        layoutParams.width = wm.getDefaultDisplay().getWidth();
-//        viewPager.setLayoutParams(layoutParams);
 
 
         viewPager.setClipChildren(true);

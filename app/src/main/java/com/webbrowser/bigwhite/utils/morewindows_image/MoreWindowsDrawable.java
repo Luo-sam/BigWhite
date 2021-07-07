@@ -31,7 +31,7 @@ public class MoreWindowsDrawable {
         int contacyCount= WebPageHelper.webpagelist.size();
         //启用抗锯齿和使用设备的文本字距
         Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
-        countPaint.setColor(Color.GRAY);
+        countPaint.setColor(Color.BLACK);
         countPaint.setTextSize(iconSize/2);
         countPaint.setTypeface(Typeface.DEFAULT_BOLD);
         canvas.drawText(String.valueOf(contacyCount), iconSize/3, 2*iconSize/3, countPaint);
