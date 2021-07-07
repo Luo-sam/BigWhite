@@ -24,7 +24,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +31,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dueeeke.videocontroller.StandardVideoController;
+import com.dueeeke.videoplayer.ijk.IjkPlayerFactory;
+import com.dueeeke.videoplayer.player.VideoView;
 import com.webbrowser.bigwhite.MainActivity;
 import com.webbrowser.bigwhite.Model.SQLite.RecordsDao;
 import com.webbrowser.bigwhite.Model.SQLite.historyDao;
@@ -66,6 +67,8 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     private ImageView webIcon, btnStart;
     private LinearLayout Liner_search, illegWebsite, linearLayout, searchHis;
     private TextView title, author;
+    private VideoView videoView;
+    private StandardVideoController standardVideoController;//播放控制器
     /*历史记录*/
     private historyDao history;
     private static final String HTTP = "http://";
@@ -76,8 +79,6 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     private RecyclerView recyclerView;
     private MainActivity mainActivity;
 
-    private VideoView videoView;
-    private StandardVideoController standardVideoController;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     /*初始化得到的view*/
     @SuppressLint("CutPasteId")
     private void initView(View view) {
-        videoView = view.findViewById(R.id.video);
+        videoView = view.findViewById(R.id.player);
         mainActivity = (MainActivity) getActivity();
         linearLayout = view.findViewById(R.id.linearLayout);
         advisory = view.findViewById(R.id.advisory);
@@ -247,6 +248,20 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
                     }
                     title.setText(CrawlPageUtil.videoData.getTitle());
                     author.setText(CrawlPageUtil.videoData.getAuthor());
+
+                    standardVideoController = new StandardVideoController(getContext());
+                    standardVideoController.addDefaultControlComponent(CrawlPageUtil.videoData.getTitle(), false);
+
+                    videoView.setVideoController(null);
+                    videoView.release();
+
+                    videoView.setVideoController(standardVideoController);
+                    videoView.setUrl(CrawlPageUtil.videoData.getVideoUrl());
+
+                    //使用IjkPlayer解码
+                    videoView.setPlayerFactory(IjkPlayerFactory.create());
+
+                    videoView.start();
 
                     mainActivity.getWindows().setVisibility(View.GONE);
                     illegWebsite.setVisibility(View.GONE);

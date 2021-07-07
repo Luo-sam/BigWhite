@@ -10,6 +10,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
+        android:name="com.webbrowser.bigwhite.utils.method.MyApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

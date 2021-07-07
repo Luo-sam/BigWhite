@@ -40,10 +40,11 @@
             android:text="@string/noAuthor"
             android:id="@+id/author"/>
     </LinearLayout>
-    <VideoView
+    <com.dueeeke.videoplayer.player.VideoView
+        android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/video"/>
+        app:layout_constraintDimensionRatio="16:9"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
