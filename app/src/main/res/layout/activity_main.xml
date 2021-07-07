@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_activity"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     tools:context=".MainActivity">
     <!--搜索实现-->
     <com.webbrowser.bigwhite.View.myView.MyViewPager
@@ -21,8 +23,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_40"
-        android:layout_above="@+id/navigation_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_22"
         android:visibility="gone">
 
         <ImageView

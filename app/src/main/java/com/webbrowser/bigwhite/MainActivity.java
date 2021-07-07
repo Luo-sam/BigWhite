@@ -2,6 +2,8 @@ package com.webbrowser.bigwhite;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -34,6 +36,7 @@ import com.webbrowser.bigwhite.activity.history;
 import com.webbrowser.bigwhite.activity.personalCenterActivity;
 import com.webbrowser.bigwhite.utils.CrawlPageUtil;
 import com.webbrowser.bigwhite.utils.method.saveInfoToThis;
+import com.webbrowser.bigwhite.utils.morewindows_image.MoreWindowsDrawable;
 import com.webbrowser.bigwhite.utils.popWindows.myPopWin;
 
 import java.util.ArrayList;
@@ -99,6 +102,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         list_file = bookmarkDao.queryFilename();
         windows=findViewById(R.id.windows);
 
+
         /*添加标签*/
         select_list = findViewById(R.id.select_list);
         file_list = findViewById(R.id.file_list);
@@ -118,6 +122,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         ImageView home = findViewById(R.id.home);
         ImageView morewindows = findViewById(R.id.more_windows);
         ImageView my = findViewById(R.id.my);
+
+        //设置多窗口图标中的数字
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.windows);
+        morewindows.setImageBitmap(MoreWindowsDrawable.generatorContactCountIcon(mContext, bitmap));
         /*绑定点击事件*/
         backleft.setOnClickListener(this);
         backright.setOnClickListener(this);
@@ -368,6 +376,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         layout.setVisibility(View.VISIBLE);
         viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(currentItem, false);
+
+      //设置多窗口图标中的数字
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.windows);
+        ImageView morewindows = findViewById(R.id.more_windows);
+        morewindows.setImageBitmap(MoreWindowsDrawable.generatorContactCountIcon(mContext, bitmap));
         enlargeWindow();
         //设置背景颜色为白色
         RelativeLayout mainLayout = findViewById(R.id.main_activity);

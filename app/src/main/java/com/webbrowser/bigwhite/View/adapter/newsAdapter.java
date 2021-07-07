@@ -58,7 +58,7 @@ public class newsAdapter extends RecyclerView.Adapter<newsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String s = data.get(position);
-        if (s.startsWith("https://f") || s.startsWith("https://p")) {
+        if (s.startsWith("https://f") || s.startsWith("https://p")||s.endsWith("gif")) {
             holder.imageView.setImageURL(s);
 
             /**

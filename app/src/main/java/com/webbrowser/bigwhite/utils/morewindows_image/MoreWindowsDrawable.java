@@ -13,7 +13,7 @@ import com.webbrowser.bigwhite.R;
 
 public class MoreWindowsDrawable {
 
-    private Bitmap generatorContactCountIcon(Context context, Bitmap icon){
+    public static Bitmap generatorContactCountIcon(Context context, Bitmap icon){
         //初始化画布
         int iconSize=(int)context.getResources().getDimension(R.dimen.dimen_40dp);
         Bitmap contactIcon=Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
@@ -27,14 +27,14 @@ public class MoreWindowsDrawable {
         Rect dst=new Rect(0, 0, iconSize, iconSize);
         canvas.drawBitmap(icon, src, dst, iconPaint);
 
-        //在图片上创建一个覆盖的联系人个数
+        //在图片上创建一个覆盖的窗口个数
         int contacyCount= WebPageHelper.webpagelist.size();
         //启用抗锯齿和使用设备的文本字距
         Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
-        countPaint.setColor(Color.RED);
-        countPaint.setTextSize(20f);
+        countPaint.setColor(Color.GRAY);
+        countPaint.setTextSize(iconSize/2);
         countPaint.setTypeface(Typeface.DEFAULT_BOLD);
-        canvas.drawText(String.valueOf(contacyCount), iconSize-18, 25, countPaint);
+        canvas.drawText(String.valueOf(contacyCount), iconSize/3, 2*iconSize/3, countPaint);
         return contactIcon;
     }
 }
