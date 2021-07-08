@@ -285,6 +285,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             startActivityForResult(intent, 456);
         } else if (id == R.id.exit) {
             saveToSp("token", "");
+            saveToSp("history", "false");
+            saveToSp("bookmark", "false");
+            saveToSp("Name", "");
             myPopWin.change();
         }else if(id==R.id.person){
             Intent intent = new Intent(MainActivity.this, personalCenterActivity.class);
