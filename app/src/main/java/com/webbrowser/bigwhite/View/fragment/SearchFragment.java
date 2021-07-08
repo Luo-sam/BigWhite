@@ -260,7 +260,6 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
 
                     //使用IjkPlayer解码
                     videoView.setPlayerFactory(IjkPlayerFactory.create());
-
                     videoView.start();
 
                     mainActivity.getWindows().setVisibility(View.GONE);
@@ -347,6 +346,10 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         return webView;
     }
 
+    public VideoView getVideoView() {
+        return videoView;
+    }
+
     /**
      * @Author luo
      * @Time 2021/7/5 15:10
@@ -366,9 +369,9 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         super.onPause();
         try {
             webView.getClass().getMethod("onPause").invoke(webView);
-//            if (videoView != null) {
-//                videoView.pause();
-//            }
+            if (videoView != null) {
+                videoView.pause();
+            }
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -380,9 +383,9 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
         super.onResume();
         try {
             webView.getClass().getMethod("onResume").invoke(webView);
-//            if (videoView != null) {
-//                videoView.resume();
-//            }
+            if (videoView != null) {
+                videoView.resume();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -391,9 +394,9 @@ public class SearchFragment extends BaseFragment implements View.OnKeyListener, 
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        if (videoView != null) {
-//            videoView.release();
-//        }
+        if (videoView != null) {
+            videoView.release();
+        }
     }
 
     @Override

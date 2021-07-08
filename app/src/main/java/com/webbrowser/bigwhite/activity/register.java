@@ -17,6 +17,7 @@ import com.webbrowser.bigwhite.Model.data.verify_res;
 import com.webbrowser.bigwhite.R;
 import com.webbrowser.bigwhite.utils.editTextUtils;
 import com.webbrowser.bigwhite.utils.httpUtils;
+import com.webbrowser.bigwhite.utils.method.saveInfoToThis;
 import com.webbrowser.bigwhite.utils.stringUtils;
 
 import java.io.IOException;
@@ -144,8 +145,6 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
                     /*得到的服务器返回值具体内容*/
                     assert response.body() != null;
                     final String responseData = response.body().string();
-//                    final String responseHeader = response.header("Authorization");
-
                     runOnUiThread(() -> {
 
                         Log.d("register_response", responseData);
@@ -154,6 +153,7 @@ public class register extends BaseActivity implements View.OnKeyListener, View.O
 
                         if (res.getState().getCode() == 0) {
                             showToast("成功注册");
+                            saveInfoToThis.loginFrom(acc,key,"http://139.196.180.89:8137/api/v1/users/login/password",register.this);
                             finish();
                         } else if (res.getState().getMsg().equals("用户名已被占用")) {
                             showToast("用户名已被占用");

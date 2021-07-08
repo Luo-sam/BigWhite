@@ -159,6 +159,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 windows.setVisibility(View.VISIBLE);
                 sc.getAdvisory().setVisibility(View.GONE);
                 sc.getLiner_search().setVisibility(View.VISIBLE);
+                if (videoView != null) {
+                    sc.getVideoView().release();
+                }
                 sc.getWeb().setVisibility(View.VISIBLE);
             }
             if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {
@@ -212,6 +215,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             windows.setVisibility(View.VISIBLE);
             sc.getLiner_search().setVisibility(View.VISIBLE);
             sc.getWeb().setVisibility(View.VISIBLE);
+            sc.getAdvisory().setVisibility(View.GONE);
         }
 
         if (sc.getIllegWebsite().getVisibility() == View.VISIBLE) {

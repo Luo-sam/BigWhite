@@ -108,14 +108,15 @@
                     android:textColorHint="#bcbcbc" />
 
                 <Button
-                    android:layout_width="105dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginStart="40dp"
                     android:text="@string/getYzm"
                     android:background="@drawable/login_register_activity_btn"
                     android:onClick="verifyGet"
                     android:textColor="#FBFBFB"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     tools:ignore="UsingOnClickInXml" />
             </LinearLayout>
 
